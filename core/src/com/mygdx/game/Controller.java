@@ -104,9 +104,9 @@ public class Controller {
         float maxVelocity = m_isGrounded ? MAX_VELOCITY_GROUNDED : MAX_VELOCITY_AIRBORNE;
 
         if (signum == -1 && vel.x > -maxVelocity) {
-            body.applyLinearImpulse(-0.05f, 0, pos.x, pos.y, true);
+            body.applyLinearImpulse(-m_fighter.getRunSpeed(), 0, pos.x, pos.y, true);
         } else if (signum == 1 && vel.x < maxVelocity) {
-            body.applyLinearImpulse(0.05f, 0, pos.x, pos.y, true);
+            body.applyLinearImpulse(m_fighter.getRunSpeed(), 0, pos.x, pos.y, true);
         }
     }
 
@@ -115,7 +115,7 @@ public class Controller {
         Body body = m_fighter.getBody();
         Vector2 pos = body.getPosition();
         if (m_isGrounded && System.currentTimeMillis() - m_lastJump > JUMP_DEBOUNCE) {
-            body.applyLinearImpulse(0, 0.3f, pos.x, pos.y, true);
+            body.applyLinearImpulse(0, m_fighter.getJumpForce(), pos.x, pos.y, true);
             m_lastJump = System.currentTimeMillis();
         }
     }
@@ -123,7 +123,6 @@ public class Controller {
 
     public void update() {
         Body body = m_fighter.getBody();
-        Vector2 vel = body.getLinearVelocity();
         Vector2 pos = body.getPosition();
 
         // raytrace to check if the fighter is on the ground

@@ -21,7 +21,7 @@ public class Fighter {
     /** The amount of force to apply to the Y Axis. */
     private final float m_jumpForce;
 
-    /** Weight, effects Launch percent. */
+    /** Weight, effects Launch percent. Damage Calcs */
     private final float m_weight;
 
     /** Amount of Pixels to Move per Frame */
@@ -40,11 +40,11 @@ public class Fighter {
     /**
      * Constructor for the Fighter Class.
      * @param name 
-     * @param jumpForce 
-     * @param weight 
      * @param runSpeed
+     * @param jumpForce
+     * @param weight
      */
-    public Fighter(String name, float jumpForce, float weight, float runSpeed) {
+    public Fighter(String name, float runSpeed, float jumpForce, float weight) {
         m_name = name;
         m_jumpForce = jumpForce;
         m_weight = weight;

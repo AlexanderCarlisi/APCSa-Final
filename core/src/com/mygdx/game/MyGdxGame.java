@@ -13,7 +13,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void create () { // Start of the Program
 		m_spriteBatch = new SpriteBatch();
 
-		Fighter fighter1 = new Fighter("Test", 10, 10, 1);
+		Fighter fighter1 = new Fighter("Test", 0.05f, 0.3f, 10f);
 		Fighter[] fighters = new Fighter[] {fighter1};
 		
 		m_battle = new Battle(fighters);
