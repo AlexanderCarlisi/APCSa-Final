@@ -55,7 +55,7 @@ public class Battle {
         for (int i = 0; i < m_fighters.length; i++) {
             m_fighters[i].setBody(WORLD.createBody(FIGHTER_BODY_DEF));
             m_fighters[i].generateFixture(FIGHTER_FIXTURE_DEF);
-            m_controllers[i] = new Controller(m_fighters[i]);
+            m_controllers[i] = new Controller(m_fighters[i], Controller.ControllerType.Keyboard);
         }
 
         // Will eventually be set with an index to determine the Arena.
