@@ -18,14 +18,18 @@ public class Arena {
     /** Constant position that every Arena's ground should be at. */
     private static final Vector2 GROUND_POSITION = new Vector2(0, GDXHelper.PTM(-200));
 
-    private final Body m_groundBody = Battle.WORLD.createBody(GDXHelper.generateBodyDef(BodyType.StaticBody, GROUND_POSITION));
+    private final Body m_groundBody = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyType.StaticBody, GROUND_POSITION));
     private final Fixture m_groundFixture = m_groundBody.createFixture(GDXHelper.generateFixtureDef(1, 0.1f, 0, GDXHelper.PTM(500), GDXHelper.PTM(3)));
+    private final Vector2[] m_startingPositions;
 
     /**
      * Constructor for the Arena Class.
      */
     public Arena() {
         m_groundFixture.setUserData("ground");
+        m_startingPositions = new Vector2[] {
+            new Vector2(GDXHelper.PTM(10), GDXHelper.PTM(10)), new Vector2(GDXHelper.PTM(7), GDXHelper.PTM(10))
+        };
     }
 
     public Body getGroundBody() {
@@ -34,6 +38,10 @@ public class Arena {
 
     public Fixture getGroundFixture() {
         return m_groundFixture;
+    }
+
+    public Vector2[] getStartingPositions() {
+        return m_startingPositions;
     }
 
     // Might not be needed

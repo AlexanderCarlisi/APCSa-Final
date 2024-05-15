@@ -160,7 +160,7 @@ public class PlayerController {
         m_isGrounded = false;
         Vector2 from = new Vector2(pos.x, pos.y);
         Vector2 to = new Vector2(pos.x, pos.y - 0.3f);
-        Battle.WORLD.rayCast(m_callback, from, to);
+        MyGdxGame.WORLD.rayCast(m_callback, from, to);
         
         // Bindings
         for (ControlAction action : m_bindings) {
