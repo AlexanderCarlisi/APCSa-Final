@@ -3,15 +3,26 @@ package com.mygdx.game;
 import java.util.HashMap;
 import java.util.function.BooleanSupplier;
 
+import org.libsdl.SDL;
+import org.libsdl.SDL_Error;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerManager;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 
-public class Controller {
+import uk.co.electronstudio.sdl2gdx.SDL2Controller;
+import uk.co.electronstudio.sdl2gdx.SDL2ControllerManager;
+import uk.co.electronstudio.sdl2gdx.SDL2Controllers;
+
+public class PlayerController {
 
     /**
      * Key Binds Class
@@ -37,11 +48,7 @@ public class Controller {
     private static final float MAX_VELOCITY_GROUNDED = 0.4f;
     private static final float MAX_VELOCITY_AIRBORNE = 0.2f;
     private static final long JUMP_DEBOUNCE = 300; // milliseconds
-
-    private final Fighter m_fighter;
-    private boolean m_isGrounded;
-    // private boolean m_hasDoubleJump;
-    private long m_lastJump;
+    private static final float AXIS_DEADZONE = 0.5f;
     
     private final RayCastCallback m_callback = new RayCastCallback() {
         @Override
@@ -55,7 +62,14 @@ public class Controller {
         }
     };
 
+    private final Fighter m_fighter;
+
     private final ControlAction[] m_bindings;
+    private SDL2Controller m_controller;
+
+    private boolean m_isGrounded;
+    // private boolean m_hasDoubleJump;
+    private long m_lastJump;
 
 
     /**
@@ -63,7 +77,7 @@ public class Controller {
      * @param fighter 
      * @param controllerType
      */
-    public Controller(Fighter fighter, ControllerType controllerType) {
+    public PlayerController(Fighter fighter, ControllerType controllerType) {
         m_fighter = fighter;
         m_isGrounded = false;
         // m_hasDoubleJump = false;
@@ -86,8 +100,25 @@ public class Controller {
                 };
                 break;
 
+            case Controller:
+                try {
+                    m_controller = new SDL2Controller(new SDL2ControllerManager(), 0);   
+                } catch (SDL_Error e) {
+                    m_controller = null;
+                    m_bindings = new ControlAction[0];
+                    return;
+                }
+
+                m_bindings = new ControlAction[] {
+                    new ControlAction(() -> m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX) < -AXIS_DEADZONE, () -> moveXAxis(-1)),
+                    new ControlAction(() -> m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX) > AXIS_DEADZONE, () -> moveXAxis(1)),
+                    new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_A), () -> jump())
+                };
+                break;
+
             default:
                 m_bindings = new ControlAction[0];
+                m_controller = null;
                 break;
         }
     }

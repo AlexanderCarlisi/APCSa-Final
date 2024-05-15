@@ -7,6 +7,7 @@ buildscript {
         gradlePluginPortal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
+        jcenter()
     }
     dependencies {
         
@@ -66,6 +67,6 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         api "com.github.tommyettinger:jbump:1.0.1"
         api "com.esotericsoftware.spine:spine-libgdx:3.8.55.1"
-        
+        implementation "uk.co.electronstudio.sdl2gdx:sdl2gdx:1.0.4"
     }
 }

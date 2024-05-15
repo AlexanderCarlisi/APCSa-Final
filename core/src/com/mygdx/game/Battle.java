@@ -38,7 +38,7 @@ public class Battle {
     private float m_previousTime = 0;
 
     /** Controllers for each player. */
-    private final Controller[] m_controllers;
+    private final PlayerController[] m_controllers;
     private final Fighter[] m_fighters;
 
     /** World Objects */
@@ -51,11 +51,11 @@ public class Battle {
      */
     public Battle(Fighter[] fighters) {
         m_fighters = fighters;
-        m_controllers = new Controller[m_fighters.length];
+        m_controllers = new PlayerController[m_fighters.length];
         for (int i = 0; i < m_fighters.length; i++) {
             m_fighters[i].setBody(WORLD.createBody(FIGHTER_BODY_DEF));
             m_fighters[i].generateFixture(FIGHTER_FIXTURE_DEF);
-            m_controllers[i] = new Controller(m_fighters[i], Controller.ControllerType.Keyboard);
+            m_controllers[i] = new PlayerController(m_fighters[i], PlayerController.ControllerType.Controller);
         }
 
         // Will eventually be set with an index to determine the Arena.
@@ -71,7 +71,7 @@ public class Battle {
         physicsStep(currentTime - m_previousTime);
         m_previousTime = currentTime;
 
-        for (Controller controller : m_controllers) {
+        for (PlayerController controller : m_controllers) {
             controller.update();
         }
     }
