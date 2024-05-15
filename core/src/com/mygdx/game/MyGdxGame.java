@@ -44,7 +44,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		// Will be gotten in the Main Menu, but for now declared here.
 		Fighter[] fighters = new Fighter[] {
 			new Fighter("Test", 0.05f, 0.3f, 10f, GDXHelper.generateFixtureDef(1f, 4f, 0f, GDXHelper.PTM(15f), GDXHelper.PTM(25f))),
-			new Fighter("Test2", 0.1f, 0.5f, 10f, GDXHelper.generateFixtureDef(1f, 4f, 0f, GDXHelper.PTM(25f), GDXHelper.PTM(35f)))};
+			new Fighter("Test2", 0.1f, 0.7f, 10f, GDXHelper.generateFixtureDef(1f, 4f, 0f, GDXHelper.PTM(25f), GDXHelper.PTM(35f)))};
 		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Keyboard2};
 		
 		m_battle = new Battle(fighters, controllers);
