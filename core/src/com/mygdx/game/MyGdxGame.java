@@ -16,6 +16,21 @@ import com.mygdx.game.PlayerController.ControllerType;
  */
 public class MyGdxGame extends ApplicationAdapter {
 
+	public static enum entityCatagory {
+		Default((short) 0),
+		Ground((short) 1),
+		Fighter((short) 2);
+
+		private final short id;
+		private entityCatagory(short id) {
+			this.id = id;
+		}
+
+		public short getID() {
+			return this.id;
+		}
+	}
+
 	private static final float TIME_STEP = 1/60f;
     private static final int VELOCITY_ITERATIONS = 6;
     private static final int POSITION_ITERATIONS = 2;
@@ -43,8 +58,18 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		// Will be gotten in the Main Menu, but for now declared here.
 		Fighter[] fighters = new Fighter[] {
-			new Fighter("Test", 0.05f, 0.3f, 10f, GDXHelper.generateFixtureDef(1f, 4f, 0f, GDXHelper.PTM(15f), GDXHelper.PTM(25f))),
-			new Fighter("Test2", 0.1f, 0.7f, 10f, GDXHelper.generateFixtureDef(1f, 4f, 0f, GDXHelper.PTM(25f), GDXHelper.PTM(35f)))};
+
+			new Fighter("Test", 0.05f, 0.3f, 10f, 
+				GDXHelper.generateFixtureDef(
+					1f, 4f, 0f, 
+					GDXHelper.PTM(15f), GDXHelper.PTM(25f), 
+					entityCatagory.Fighter.getID(), entityCatagory.Ground.getID())),
+
+			new Fighter("Test2", 0.1f, 0.7f, 10f, 
+				GDXHelper.generateFixtureDef(1f, 4f, 0f, 
+					GDXHelper.PTM(25f), GDXHelper.PTM(35f), 
+					entityCatagory.Fighter.getID(), entityCatagory.Ground.getID()))};
+
 		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Keyboard2};
 		
 		m_battle = new Battle(fighters, controllers);

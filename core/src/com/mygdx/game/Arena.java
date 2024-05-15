@@ -19,7 +19,9 @@ public class Arena {
     private static final Vector2 GROUND_POSITION = new Vector2(0, GDXHelper.PTM(-200));
 
     private final Body m_groundBody = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyType.StaticBody, GROUND_POSITION));
-    private final Fixture m_groundFixture = m_groundBody.createFixture(GDXHelper.generateFixtureDef(1, 0.1f, 0, GDXHelper.PTM(500), GDXHelper.PTM(3)));
+    private final Fixture m_groundFixture = m_groundBody.createFixture(
+        GDXHelper.generateFixtureDef(1, 0.1f, 0, GDXHelper.PTM(500), GDXHelper.PTM(3), 
+            MyGdxGame.entityCatagory.Ground.getID(), MyGdxGame.entityCatagory.Fighter.getID()));
     private final Vector2[] m_startingPositions;
 
     /**

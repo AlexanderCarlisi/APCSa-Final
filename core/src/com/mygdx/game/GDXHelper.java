@@ -50,9 +50,11 @@ public class GDXHelper {
      * @param restitution
      * @param width
      * @param height
+     * @param catagoryBits
+     * @param maskBits
      * @return
      */
-    public static FixtureDef generateFixtureDef(float density, float friction, float restitution, float width, float height) {
+    public static FixtureDef generateFixtureDef(float density, float friction, float restitution, float width, float height, short catagoryBits, short maskBits) {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.density = density;
         fixtureDef.friction = friction;
@@ -62,6 +64,8 @@ public class GDXHelper {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width, height);
         fixtureDef.shape = shape;
+        fixtureDef.filter.categoryBits = catagoryBits;
+        fixtureDef.filter.maskBits = maskBits;
 
         return fixtureDef;
     }
