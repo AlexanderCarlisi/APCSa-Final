@@ -17,7 +17,7 @@ import com.mygdx.game.PlayerController.ControllerType;
  */
 public class MyGdxGame extends ApplicationAdapter {
 
-	public static enum entityCategory {
+	public enum entityCategory {
 		Default((short) 0),
 		Ground((short) 1),
 		Fighter((short) 2);

@@ -39,7 +39,7 @@ public class PlayerController {
     }
 
 
-    public static enum ControllerType {Keyboard, Keyboard2, Controller};
+    public enum ControllerType {Keyboard, Keyboard2, Controller};
     private static final float MAX_VELOCITY_GROUNDED = 0.4f; // Should become character specific
     private static final float MAX_VELOCITY_AIRBORNE = 0.2f; // Should become character specific
     private static final long JUMP_DEBOUNCE = 300; // milliseconds
