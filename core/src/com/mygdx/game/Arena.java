@@ -28,7 +28,7 @@ public class Arena {
     private final Body m_groundBody = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyType.StaticBody, GROUND_POSITION));
     private final Fixture m_groundFixture = m_groundBody.createFixture(
         GDXHelper.generateFixtureDef(1, 0.1f, 0, GROUND_WIDTH, GROUND_HEIGHT,
-            MyGdxGame.entityCatagory.Ground.getID(), MyGdxGame.entityCatagory.Fighter.getID()));
+            MyGdxGame.entityCategory.Ground.getID(), MyGdxGame.entityCategory.Fighter.getID()));
     private final Vector2[] m_startingPositions;
 
     private final Stage m_stage = new Stage();

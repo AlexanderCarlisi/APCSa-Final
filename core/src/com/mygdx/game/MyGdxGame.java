@@ -17,13 +17,13 @@ import com.mygdx.game.PlayerController.ControllerType;
  */
 public class MyGdxGame extends ApplicationAdapter {
 
-	public static enum entityCatagory {
+	public static enum entityCategory {
 		Default((short) 0),
 		Ground((short) 1),
 		Fighter((short) 2);
 
 		private final short id;
-		private entityCatagory(short id) {
+		private entityCategory(short id) {
 			this.id = id;
 		}
 
@@ -67,13 +67,13 @@ public class MyGdxGame extends ApplicationAdapter {
 				GDXHelper.generateFixtureDef(
 					1f, 4f, 0f, 
 					GDXHelper.PTM(15f), GDXHelper.PTM(25f), 
-					entityCatagory.Fighter.getID(), entityCatagory.Ground.getID()), GDXHelper.PTM(15f), GDXHelper.PTM(25f)),
+					entityCategory.Fighter.getID(), entityCategory.Ground.getID()), GDXHelper.PTM(15f), GDXHelper.PTM(25f)),
 
 			new Fighter("Test2", 0.1f, 0.7f, 10f, 
 				GDXHelper.generateFixtureDef(
 					1f, 4f, 0f, 
 					GDXHelper.PTM(25f), GDXHelper.PTM(35f), 
-					entityCatagory.Fighter.getID(), entityCatagory.Ground.getID()), GDXHelper.PTM(25f), GDXHelper.PTM(35f))};
+					entityCategory.Fighter.getID(), entityCategory.Ground.getID()), GDXHelper.PTM(25f), GDXHelper.PTM(35f))};
 
 		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Keyboard2};
 		
