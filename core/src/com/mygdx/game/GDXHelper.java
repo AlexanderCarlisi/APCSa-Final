@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -68,5 +69,34 @@ public class GDXHelper {
         fixtureDef.filter.maskBits = maskBits;
 
         return fixtureDef;
+    }
+
+
+    /**
+     * Converts a position in Box2D to its position in LibGDX, for Drawing objects to the screen.
+     * @param box2dPos x cord or y cord
+     * @param dimension either the Width(Box2D x cord) or Height(Box2D y cord) of the Fixture.
+     * @return Position for LibGDX components
+     */
+    public static float convertBox2dPos(float box2dPos, float dimension) {
+        return box2dPos - dimension;
+    }
+
+
+    /**
+     * The Transform between Box2d and LibGDX is weird, this will convert LibGDX drawing
+     * pos to Box2d's drawing pose. This uses Box2d's position as the real one, and LibGDX as
+     * the overlay.
+     *
+     * <p>
+     * Requires shapeRenderer to have already been begun!
+     *
+     * @param posX
+     * @param posY
+     * @param width
+     * @param height
+     */
+    public static void drawRect(ShapeRenderer shapeRenderer, float posX, float posY, float width, float height) {
+        shapeRenderer.rect(posX - width, posY - height, width * 2, height * 2);
     }
 }

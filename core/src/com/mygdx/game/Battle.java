@@ -1,7 +1,10 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.mygdx.game.PlayerController.ControllerType;
 
 
@@ -28,7 +31,7 @@ public class Battle {
      * @param controllers
      */
     public Battle(Fighter[] fighters, ControllerType[] controllers) {
-        m_arena = new Arena(); // Will eventually be set with an index to determine the Arena.
+        m_arena = new Arena(fighters.length); // Will eventually be set with an index to determine the Arena.
         m_fighters = fighters;
         m_controllers = new PlayerController[m_fighters.length];
         Vector2[] startingPositions = m_arena.getStartingPositions();
@@ -46,6 +49,8 @@ public class Battle {
         for (PlayerController controller : m_controllers) {
             controller.update();
         }
+
+        m_arena.update(m_fighters);
     }
     
 
@@ -53,13 +58,17 @@ public class Battle {
      * Objects to update in Render Loop. 
      * @param spriteBatch
      */
-    public void draw(SpriteBatch spriteBatch) {
+    public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
         // spriteBatch.begin();
-        // for (Controller controller : m_controllers) {
-        //     Fighter fighter = controller.getFighter();
-        //     spriteBatch.draw(fighter.getTexture(), fighter.getXPos(), fighter.getYPos());
-        // }
         // spriteBatch.end();
+        shapeRenderer.begin();
+        for (Fighter fighter : m_fighters) {
+            Vector2 pos = fighter.getBody().getPosition();
+            Vector2 size = fighter.getDimensions();
+            GDXHelper.drawRect(shapeRenderer, pos.x, pos.y, size.x, size.y);
+        }
+        m_arena.draw(shapeRenderer);
+        shapeRenderer.end();
     }
 
 
@@ -71,7 +80,6 @@ public class Battle {
         for (Fighter fighter : m_fighters) {
             fighter.getFixture().getShape().dispose();
         }
-
-        m_arena.getGroundFixture().getShape().dispose();
+        m_arena.dispose();
     }
 }

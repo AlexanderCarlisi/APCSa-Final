@@ -1,9 +1,14 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 /**
@@ -16,22 +21,41 @@ import com.badlogic.gdx.physics.box2d.Fixture;
  */
 public class Arena {
     /** Constant position that every Arena's ground should be at. */
-    private static final Vector2 GROUND_POSITION = new Vector2(0, GDXHelper.PTM(-200));
+    private static final Vector2 GROUND_POSITION = new Vector2(GDXHelper.PTM(0), GDXHelper.PTM(-200));
+    private static final float GROUND_WIDTH = GDXHelper.PTM(500);
+    private static final float GROUND_HEIGHT = GDXHelper.PTM(3);
 
     private final Body m_groundBody = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyType.StaticBody, GROUND_POSITION));
     private final Fixture m_groundFixture = m_groundBody.createFixture(
-        GDXHelper.generateFixtureDef(1, 0.1f, 0, GDXHelper.PTM(500), GDXHelper.PTM(3), 
+        GDXHelper.generateFixtureDef(1, 0.1f, 0, GROUND_WIDTH, GROUND_HEIGHT,
             MyGdxGame.entityCatagory.Ground.getID(), MyGdxGame.entityCatagory.Fighter.getID()));
     private final Vector2[] m_startingPositions;
+
+    private final Stage m_stage = new Stage();
+    private final Label[] m_healthLabels;
+
 
     /**
      * Constructor for the Arena Class.
      */
-    public Arena() {
+    public Arena(int numOfFighters) {
         m_groundFixture.setUserData("ground");
         m_startingPositions = new Vector2[] {
             new Vector2(GDXHelper.PTM(10), GDXHelper.PTM(10)), new Vector2(GDXHelper.PTM(7), GDXHelper.PTM(10))
         };
+
+        m_healthLabels = new Label[numOfFighters];
+        float labelPosX = 0;
+        float labelPosY = 10;
+        for (int i = 0; i < numOfFighters; i++) {
+            m_healthLabels[i] = new Label("0%", new Skin(new FileHandle("C:\\Users\\alexh\\Desktop\\test\\core\\src\\com\\mygdx\\game\\FontSkins\\default\\skin\\uiskin.json")));
+            m_stage.addActor(m_healthLabels[i]);
+            m_healthLabels[i].setPosition(labelPosX, labelPosY);
+            labelPosX += 100;
+        }
+
+        // m_stage.setDebugAll(true);
+
     }
 
     public Body getGroundBody() {
@@ -46,14 +70,28 @@ public class Arena {
         return m_startingPositions;
     }
 
-    // Might not be needed
-    // public void draw() {
+    /**
+     * Render elements of the Arena. Including UI, Background, and Ground.
+     */
+    public void draw(ShapeRenderer shapeRenderer) {
+        m_stage.draw();
+        GDXHelper.drawRect(shapeRenderer, GROUND_POSITION.x, GROUND_POSITION.y, GROUND_WIDTH, GROUND_HEIGHT);
+    }
 
-    // }
+    public void dispose() {
+        m_stage.dispose();
+        m_groundFixture.getShape().dispose();
+    }
+    
+    public void update(Fighter[] fighters) {
+        for (int i = 0; i < fighters.length; i++) {
+            m_healthLabels[i].setText(fighters[i].getName() + ": " + fighters[i].getHealth() + "%");
+            // Vector2 pos = fighters[i].getBody().getPosition();
+            // Vector2 dim = fighters[i].getDimensions();
+            // m_healthLabels[i].setPosition(pos.x + dim.x, pos.y + dim.y);
+        }
 
-    // For if there was ever anything wanting real-time updates. Like a moving background.
-    // public void update() {
-
-    // }
+        m_stage.act();
+    }
     
 }

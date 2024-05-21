@@ -151,22 +151,10 @@ public class PlayerController {
         Body body = m_fighter.getBody();
         Vector2 pos = body.getPosition();
 
-        // Get height for Ground Raycast
-        PolygonShape shape = (PolygonShape) m_fighter.getFixture().getShape();
-        float height = 0;
-        int vertexCount = shape.getVertexCount();
-        Vector2 vertex = new Vector2();
-        for (int i = 0; i < vertexCount; i++) {
-            shape.getVertex(i, vertex);
-            if (vertex.y > height) {
-                height = vertex.y;
-            }
-        }
-
         // raytrace to check if the fighter is on the ground
         m_isGrounded = false;
         Vector2 from = new Vector2(pos.x, pos.y);
-        Vector2 to = new Vector2(pos.x, pos.y - height / 2 - 0.3f);
+        Vector2 to = new Vector2(pos.x, pos.y - m_fighter.getDimensions().y / 2 - 0.3f);
         MyGdxGame.WORLD.rayCast(m_callback, from, to);
         
         // Bindings

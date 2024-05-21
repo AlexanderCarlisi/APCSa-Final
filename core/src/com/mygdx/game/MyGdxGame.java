@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -37,7 +38,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	/** World Object, handles all Physics, needs to be declared first so bodies don't throw an error. */
     public static World WORLD;
-	private static Camera CAMERA;
+	public static Camera CAMERA;
 
 	/** Render vars */
     private Box2DDebugRenderer m_debugRenderer;
@@ -45,6 +46,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private float m_previousTime = 0;
 
 	private SpriteBatch m_spriteBatch;
+	private ShapeRenderer m_shapeRenderer;
 	private Battle m_battle;
 	
 
@@ -55,6 +57,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		m_debugRenderer = new Box2DDebugRenderer();
 
 		m_spriteBatch = new SpriteBatch();
+		m_shapeRenderer = new ShapeRenderer();
+		m_shapeRenderer.setAutoShapeType(true);
 
 		// Will be gotten in the Main Menu, but for now declared here.
 		Fighter[] fighters = new Fighter[] {
@@ -63,12 +67,13 @@ public class MyGdxGame extends ApplicationAdapter {
 				GDXHelper.generateFixtureDef(
 					1f, 4f, 0f, 
 					GDXHelper.PTM(15f), GDXHelper.PTM(25f), 
-					entityCatagory.Fighter.getID(), entityCatagory.Ground.getID())),
+					entityCatagory.Fighter.getID(), entityCatagory.Ground.getID()), GDXHelper.PTM(15f), GDXHelper.PTM(25f)),
 
 			new Fighter("Test2", 0.1f, 0.7f, 10f, 
-				GDXHelper.generateFixtureDef(1f, 4f, 0f, 
+				GDXHelper.generateFixtureDef(
+					1f, 4f, 0f, 
 					GDXHelper.PTM(25f), GDXHelper.PTM(35f), 
-					entityCatagory.Fighter.getID(), entityCatagory.Ground.getID()))};
+					entityCatagory.Fighter.getID(), entityCatagory.Ground.getID()), GDXHelper.PTM(25f), GDXHelper.PTM(35f))};
 
 		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Keyboard2};
 		
@@ -84,11 +89,14 @@ public class MyGdxGame extends ApplicationAdapter {
         physicsStep(currentTime - m_previousTime);
         m_previousTime = currentTime;
 
+		CAMERA.update();
 		m_battle.update();
 
 		// Draw Characters
-		m_battle.draw(m_spriteBatch);
 		m_debugRenderer.render(WORLD, CAMERA.combined);
+		m_spriteBatch.setProjectionMatrix(CAMERA.combined);
+		m_shapeRenderer.setProjectionMatrix(CAMERA.combined);
+		m_battle.draw(m_spriteBatch, m_shapeRenderer);
 
 		// Draw Background
 
