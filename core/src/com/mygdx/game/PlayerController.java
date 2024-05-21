@@ -40,10 +40,10 @@ public class PlayerController {
 
 
     public static enum ControllerType {Keyboard, Keyboard2, Controller};
-    private static final float MAX_VELOCITY_GROUNDED = 0.4f;
-    private static final float MAX_VELOCITY_AIRBORNE = 0.2f;
+    private static final float MAX_VELOCITY_GROUNDED = 0.4f; // Should become character specific
+    private static final float MAX_VELOCITY_AIRBORNE = 0.2f; // Should become character specific
     private static final long JUMP_DEBOUNCE = 300; // milliseconds
-    private static final float AXIS_DEADZONE = 0.5f;
+    private static final float AXIS_DEADZONE = 0.2f;
     
     private final RayCastCallback m_callback = new RayCastCallback() {
         @Override
@@ -83,7 +83,7 @@ public class PlayerController {
                 m_bindings = new ControlAction[] {
                     new ControlAction(() -> Gdx.input.isKeyPressed(Keys.A), () -> moveXAxis(-1)),
                     new ControlAction(() -> Gdx.input.isKeyPressed(Keys.D), () -> moveXAxis(1)),
-                    new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.W) || Gdx.input.isKeyJustPressed(Keys.SPACE), () -> jump())
+                    new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.W) || Gdx.input.isKeyJustPressed(Keys.SPACE), this::jump)
                 };
                 break;
 
@@ -91,7 +91,7 @@ public class PlayerController {
                 m_bindings = new ControlAction[] {
                     new ControlAction(() -> Gdx.input.isKeyPressed(Keys.LEFT), () -> moveXAxis(-1)),
                     new ControlAction(() -> Gdx.input.isKeyPressed(Keys.RIGHT), () -> moveXAxis(1)),
-                    new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.UP), () -> jump())
+                    new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.UP), this::jump)
                 };
                 break;
 
@@ -105,9 +105,9 @@ public class PlayerController {
                 }
 
                 m_bindings = new ControlAction[] {
-                    new ControlAction(() -> m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX) < -AXIS_DEADZONE, () -> moveXAxis(-1)),
-                    new ControlAction(() -> m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX) > AXIS_DEADZONE, () -> moveXAxis(1)),
-                    new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_A), () -> jump())
+                    new ControlAction(() -> Math.abs(m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX)) > AXIS_DEADZONE,
+                            () -> moveXAxis(m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX))),
+                    new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_A), this::jump)
                 };
                 break;
 
@@ -121,18 +121,16 @@ public class PlayerController {
 
     /**
      * Move the Fighter on the X-Axis.
-     * @param signum : Either 1 or -1. -1 is Left, 1 is Right.
+     * @param modifier value to modify the move direction by
      */
-    public void moveXAxis(int signum) {
+    public void moveXAxis(float modifier) {
         Body body = m_fighter.getBody();
         Vector2 pos = body.getPosition();
         Vector2 vel = body.getLinearVelocity();
         float maxVelocity = m_isGrounded ? MAX_VELOCITY_GROUNDED : MAX_VELOCITY_AIRBORNE;
 
-        if (signum == -1 && vel.x > -maxVelocity) {
-            body.applyLinearImpulse(-m_fighter.getRunSpeed(), 0, pos.x, pos.y, true);
-        } else if (signum == 1 && vel.x < maxVelocity) {
-            body.applyLinearImpulse(m_fighter.getRunSpeed(), 0, pos.x, pos.y, true);
+        if (Math.abs(vel.x) < maxVelocity) {
+            body.applyLinearImpulse(m_fighter.getRunSpeed() * modifier, 0, pos.x, pos.y, true);
         }
     }
 
