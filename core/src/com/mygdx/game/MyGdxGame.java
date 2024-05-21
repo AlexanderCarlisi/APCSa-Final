@@ -77,7 +77,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Keyboard2};
 		
-		m_battle = new Battle(fighters, controllers);
+		m_battle = new Battle(fighters, controllers, new BattleConfig());
 	}
 
 

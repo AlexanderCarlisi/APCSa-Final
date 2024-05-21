@@ -20,17 +20,28 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
  * This class's implementation should mostly be in the Battle class.
  */
 public class Arena {
+    /** Arena Bounds, if a Fighter is outside of these bounds they will die. */
+    public static final Vector2 BOUNDS = new Vector2(GDXHelper.PTM(1500), GDXHelper.PTM(1500));
+
     /** Constant position that every Arena's ground should be at. */
     private static final Vector2 GROUND_POSITION = new Vector2(GDXHelper.PTM(0), GDXHelper.PTM(-200));
+
     private static final float GROUND_WIDTH = GDXHelper.PTM(500);
     private static final float GROUND_HEIGHT = GDXHelper.PTM(3);
 
+    private final Vector2[] m_startingPositions;
+
+    // World Objects
     private final Body m_groundBody = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyType.StaticBody, GROUND_POSITION));
     private final Fixture m_groundFixture = m_groundBody.createFixture(
         GDXHelper.generateFixtureDef(1, 0.1f, 0, GROUND_WIDTH, GROUND_HEIGHT,
             MyGdxGame.entityCategory.Ground.getID(), MyGdxGame.entityCategory.Fighter.getID()));
-    private final Vector2[] m_startingPositions;
+    private final Body m_bedrockBody = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyType.StaticBody, new Vector2(0, -5000)));
+    private final Fixture m_bedrockFixture = m_bedrockBody.createFixture(
+            GDXHelper.generateFixtureDef(1, 10, 0, 10000, 0.01f,
+                    MyGdxGame.entityCategory.Ground.getID(), MyGdxGame.entityCategory.Fighter.getID()));
 
+    // UI
     private final Stage m_stage = new Stage();
     private final Label[] m_healthLabels;
 
@@ -81,6 +92,7 @@ public class Arena {
     public void dispose() {
         m_stage.dispose();
         m_groundFixture.getShape().dispose();
+        m_bedrockFixture.getShape().dispose();
     }
     
     public void update(Fighter[] fighters) {
