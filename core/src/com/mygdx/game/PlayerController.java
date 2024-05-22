@@ -153,7 +153,8 @@ public class PlayerController {
             m_lastJump = System.currentTimeMillis();
         }
         else if (!m_isGrounded && m_hasDoubleJump && System.currentTimeMillis() - m_lastJump > JUMP_DEBOUNCE) {
-            body.applyLinearImpulse(0, m_fighter.getJumpForce() * (m_isFalling ? 3f : 1.35f), pos.x, pos.y, true);
+            // body.applyLinearImpulse(0, m_fighter.getJumpForce() * (m_isFalling ? 3f : 1.35f), pos.x, pos.y, true);
+            body.applyLinearImpulse(0, m_fighter.getJumpForce() * 1.35f, pos.x, pos.y, true);
             m_lastJump = System.currentTimeMillis();
             m_hasDoubleJump = false;
         }
