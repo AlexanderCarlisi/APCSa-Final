@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import java.util.function.BooleanSupplier;
 
+import com.badlogic.gdx.ai.steer.behaviors.Jump;
 import org.libsdl.SDL;
 import org.libsdl.SDL_Error;
 
@@ -42,7 +43,7 @@ public class PlayerController {
     public enum ControllerType {Keyboard, Keyboard2, Controller};
     private static final float MAX_VELOCITY_GROUNDED = 0.4f; // Should become character specific
     private static final float MAX_VELOCITY_AIRBORNE = 0.2f; // Should become character specific
-    private static final long JUMP_DEBOUNCE = 300; // milliseconds
+    private static final long JUMP_DEBOUNCE = 125; // milliseconds
     private static final float AXIS_DEADZONE = 0.2f;
     
     private final RayCastCallback m_callback = new RayCastCallback() {
@@ -63,8 +64,13 @@ public class PlayerController {
     private SDL2Controller m_controller;
 
     private boolean m_isGrounded;
-    // private boolean m_hasDoubleJump;
+    private boolean m_hasDoubleJump;
+    private boolean m_isFalling;
     private long m_lastJump;
+
+    private float m_previousY;
+    private float m_previousTime;
+    private float m_deltaTime;
 
 
     /**
@@ -75,7 +81,11 @@ public class PlayerController {
     public PlayerController(Fighter fighter, ControllerType controllerType) {
         m_fighter = fighter;
         m_isGrounded = false;
-        // m_hasDoubleJump = false;
+        m_hasDoubleJump = false;
+        m_isFalling = false;
+        m_previousY = 0;
+        m_deltaTime = 0;
+        m_previousTime = 0;
 
         // init bindings
         switch(controllerType) {
@@ -142,6 +152,11 @@ public class PlayerController {
             body.applyLinearImpulse(0, m_fighter.getJumpForce(), pos.x, pos.y, true);
             m_lastJump = System.currentTimeMillis();
         }
+        else if (!m_isGrounded && m_hasDoubleJump && System.currentTimeMillis() - m_lastJump > JUMP_DEBOUNCE) {
+            body.applyLinearImpulse(0, m_fighter.getJumpForce() * (m_isFalling ? 3f : 1.35f), pos.x, pos.y, true);
+            m_lastJump = System.currentTimeMillis();
+            m_hasDoubleJump = false;
+        }
     }
 
 
@@ -154,11 +169,25 @@ public class PlayerController {
         Vector2 from = new Vector2(pos.x, pos.y);
         Vector2 to = new Vector2(pos.x, pos.y - m_fighter.getDimensions().y / 2 - 0.3f);
         MyGdxGame.WORLD.rayCast(m_callback, from, to);
-        
+
+        m_isFalling = false;
+        m_deltaTime = System.currentTimeMillis() - m_previousTime;
+        float fallSpeed = Math.abs(m_previousY) - Math.abs(pos.y);
+        if (fallSpeed < -0.4) {
+            m_isFalling = true;
+        }
+
         // Bindings
         for (ControlAction action : m_bindings) {
             action.checkAndPerform();
         }
+
+        if (m_isGrounded) {
+            m_hasDoubleJump = true;
+        }
+
+        m_previousY = pos.y;
+        m_previousTime = System.currentTimeMillis();
     }
 
 
