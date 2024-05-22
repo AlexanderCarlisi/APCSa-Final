@@ -60,7 +60,7 @@ public class Battle {
         for (PlayerController controller : m_controllers) {
             controller.update();
         }
-        m_arena.update(m_fighters);
+        m_arena.update(m_fighters, m_stocks);
 
         // Death Checks
         for (int i = 0; i < m_fighters.length; i++) {

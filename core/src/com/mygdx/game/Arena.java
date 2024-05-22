@@ -29,6 +29,8 @@ public class Arena {
     private static final float GROUND_WIDTH = GDXHelper.PTM(500);
     private static final float GROUND_HEIGHT = GDXHelper.PTM(3);
 
+    private static final Skin FONT = new Skin(new FileHandle("C:\\Users\\alexh\\Desktop\\test\\core\\src\\com\\mygdx\\game\\FontSkins\\default\\skin\\uiskin.json"));
+
     private final Vector2[] m_startingPositions;
 
     // World Objects
@@ -44,6 +46,7 @@ public class Arena {
     // UI
     private final Stage m_stage = new Stage();
     private final Label[] m_healthLabels;
+    private final Label[] m_stockLabels;
 
 
     /**
@@ -56,12 +59,16 @@ public class Arena {
         };
 
         m_healthLabels = new Label[numOfFighters];
-        float labelPosX = 0;
-        float labelPosY = 10;
+        m_stockLabels = new Label[numOfFighters];
+        float labelPosX = 100;
+        float labelPosY = 40;
         for (int i = 0; i < numOfFighters; i++) {
-            m_healthLabels[i] = new Label("0%", new Skin(new FileHandle("C:\\Users\\alexh\\Desktop\\test\\core\\src\\com\\mygdx\\game\\FontSkins\\default\\skin\\uiskin.json")));
+            m_healthLabels[i] = new Label("0%", FONT);
             m_stage.addActor(m_healthLabels[i]);
             m_healthLabels[i].setPosition(labelPosX, labelPosY);
+            m_stockLabels[i] = new Label("0", FONT);
+            m_stage.addActor(m_stockLabels[i]);
+            m_stockLabels[i].setPosition(labelPosX, labelPosY - 20);
             labelPosX += 100;
         }
 
@@ -95,9 +102,10 @@ public class Arena {
         m_bedrockFixture.getShape().dispose();
     }
     
-    public void update(Fighter[] fighters) {
+    public void update(Fighter[] fighters, int[] stocks) {
         for (int i = 0; i < fighters.length; i++) {
             m_healthLabels[i].setText(fighters[i].getName() + ": " + fighters[i].getHealth() + "%");
+            m_stockLabels[i].setText((stocks[i] == -1) ? "inf" : Integer.toString(stocks[i]));
             // Vector2 pos = fighters[i].getBody().getPosition();
             // Vector2 dim = fighters[i].getDimensions();
             // m_healthLabels[i].setPosition(pos.x + dim.x, pos.y + dim.y);
