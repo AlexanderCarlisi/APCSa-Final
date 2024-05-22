@@ -47,6 +47,8 @@ public class Arena {
     private final Stage m_stage = new Stage();
     private final Label[] m_healthLabels;
     private final Label[] m_stockLabels;
+    private final Label m_timerLabel;
+    private float m_startTime;
 
 
     /**
@@ -71,6 +73,11 @@ public class Arena {
             m_stockLabels[i].setPosition(labelPosX, labelPosY - 20);
             labelPosX += 100;
         }
+
+        m_startTime = System.currentTimeMillis();
+        m_timerLabel = new Label(Float.toString(m_startTime), FONT);
+        m_stage.addActor(m_timerLabel);
+        m_timerLabel.setPosition(1200, 600);
 
         // m_stage.setDebugAll(true);
 
@@ -102,7 +109,7 @@ public class Arena {
         m_bedrockFixture.getShape().dispose();
     }
     
-    public void update(Fighter[] fighters, int[] stocks) {
+    public void update(Fighter[] fighters, int[] stocks, float timeLimit) {
         for (int i = 0; i < fighters.length; i++) {
             m_healthLabels[i].setText(fighters[i].getName() + ": " + fighters[i].getHealth() + "%");
             m_stockLabels[i].setText((stocks[i] == -1) ? "inf" : Integer.toString(stocks[i]));
@@ -111,7 +118,23 @@ public class Arena {
             // m_healthLabels[i].setPosition(pos.x + dim.x, pos.y + dim.y);
         }
 
+        // update timer
+        if (timeLimit == -1) { // Count up
+            m_timerLabel.setText(String.format("%.2f", (System.nanoTime() - m_startTime) / 1000000000.0));
+        } else { // Count Down from TimeLimit
+            m_timerLabel.setText(String.format("%.2f", (timeLimit - (System.nanoTime() - m_startTime) / 1000000000.0)));
+        }
+
         m_stage.act();
+    }
+
+
+    /**
+     * Set the StartTime when the battle begins.
+     * @param time in NanoSeconds
+     */
+    public void setStartTime(float time) {
+        m_startTime = time;
     }
     
 }

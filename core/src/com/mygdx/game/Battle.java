@@ -29,6 +29,9 @@ public class Battle {
     private final int[] m_stocks;
     private final float m_startTime;
 
+    /** If the startTime in Arena has been set. */
+    private boolean m_setStartTime;
+
 
     /**
      * Constructor for the Battle Class.
@@ -48,7 +51,8 @@ public class Battle {
             m_stocks[i] = m_config.stocks;
         }
 
-        m_startTime = (m_config.timeLimit == -1) ? 0 : System.currentTimeMillis();
+        m_startTime = (m_config.timeLimit == -1) ? 0 : System.nanoTime();
+        m_setStartTime = false;
     }
 
 
@@ -57,10 +61,14 @@ public class Battle {
      *  For Logic, not Graphics
      */
     public void update() {
+        if (!m_setStartTime) {
+            m_setStartTime = true;
+            m_arena.setStartTime(System.nanoTime());
+        }
         for (PlayerController controller : m_controllers) {
             controller.update();
         }
-        m_arena.update(m_fighters, m_stocks);
+        m_arena.update(m_fighters, m_stocks, m_config.timeLimit);
 
         // Death Checks
         for (int i = 0; i < m_fighters.length; i++) {
@@ -81,7 +89,7 @@ public class Battle {
         // End Battle Checks
         // Timer
         if (m_config.timeLimit != -1) {
-            if (m_startTime + m_config.timeLimit < System.currentTimeMillis()) {
+            if ((m_config.timeLimit - (System.nanoTime() - m_startTime) / 1000000000.0) <= 0) {
                 // End Battle
                 System.out.println("Battle Ended");
             }
