@@ -111,11 +111,8 @@ public class Arena {
     
     public void update(Fighter[] fighters, int[] stocks, float timeLimit) {
         for (int i = 0; i < fighters.length; i++) {
-            m_healthLabels[i].setText(fighters[i].getName() + ": " + fighters[i].getHealth() + "%");
+            m_healthLabels[i].setText(fighters[i].getName() + ": " + String.format("%.1f",fighters[i].getHealth()) + "%");
             m_stockLabels[i].setText((stocks[i] == -1) ? "inf" : Integer.toString(stocks[i]));
-            // Vector2 pos = fighters[i].getBody().getPosition();
-            // Vector2 dim = fighters[i].getDimensions();
-            // m_healthLabels[i].setPosition(pos.x + dim.x, pos.y + dim.y);
         }
 
         // update timer

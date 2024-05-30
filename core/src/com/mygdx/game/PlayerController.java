@@ -67,6 +67,7 @@ public class PlayerController {
     private boolean m_hasDoubleJump;
     private boolean m_isFalling;
     private long m_lastJump;
+    private boolean m_isFacingRight;
 
     private float m_previousY;
     private float m_previousTime;
@@ -83,6 +84,7 @@ public class PlayerController {
         m_isGrounded = false;
         m_hasDoubleJump = false;
         m_isFalling = false;
+        m_isFacingRight = false;
         m_previousY = 0;
         m_deltaTime = 0;
         m_previousTime = 0;
@@ -91,16 +93,17 @@ public class PlayerController {
         switch(controllerType) {
             case Keyboard:
                 m_bindings = new ControlAction[] {
-                    new ControlAction(() -> Gdx.input.isKeyPressed(Keys.A), () -> moveXAxis(-1)),
-                    new ControlAction(() -> Gdx.input.isKeyPressed(Keys.D), () -> moveXAxis(1)),
-                    new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.W) || Gdx.input.isKeyJustPressed(Keys.SPACE), this::jump)
+                        new ControlAction(() -> Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D), () -> moveXAxis(-1)),
+                        new ControlAction(() -> Gdx.input.isKeyPressed(Keys.D) && !Gdx.input.isKeyPressed(Keys.A), () -> moveXAxis(1)),
+                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.SPACE), this::jump),
+                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.J), () -> attack(ControllerType.Keyboard))
                 };
                 break;
 
             case Keyboard2:
                 m_bindings = new ControlAction[] {
-                    new ControlAction(() -> Gdx.input.isKeyPressed(Keys.LEFT), () -> moveXAxis(-1)),
-                    new ControlAction(() -> Gdx.input.isKeyPressed(Keys.RIGHT), () -> moveXAxis(1)),
+                    new ControlAction(() -> Gdx.input.isKeyPressed(Keys.LEFT) && !Gdx.input.isKeyPressed(Keys.RIGHT), () -> moveXAxis(-1)),
+                    new ControlAction(() -> Gdx.input.isKeyPressed(Keys.RIGHT) && !Gdx.input.isKeyPressed(Keys.LEFT), () -> moveXAxis(1)),
                     new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.UP), this::jump)
                 };
                 break;
@@ -142,6 +145,8 @@ public class PlayerController {
         if (Math.abs(vel.x) < maxVelocity) {
             body.applyLinearImpulse(m_fighter.getRunSpeed() * modifier, 0, pos.x, pos.y, true);
         }
+
+        m_isFacingRight = Math.signum(modifier) >= 0;
     }
 
 
@@ -158,6 +163,46 @@ public class PlayerController {
             m_lastJump = System.currentTimeMillis();
             m_hasDoubleJump = false;
         }
+    }
+
+
+    public void attack(ControllerType ct) {
+        boolean left;
+        boolean right;
+        boolean up;
+        boolean down;
+
+        switch(ct) {
+            case Controller: {
+                left = m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX) < -AXIS_DEADZONE;
+                right = m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX) > AXIS_DEADZONE;
+                up = m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTY) > AXIS_DEADZONE;
+                down = m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTY) < -AXIS_DEADZONE;
+                break;
+            }
+
+            default: {
+                left = Gdx.input.isKeyPressed(Keys.A);
+                right = Gdx.input.isKeyPressed(Keys.D);
+                up = Gdx.input.isKeyPressed(Keys.W);
+                down = Gdx.input.isKeyPressed(Keys.S);
+                break;
+            }
+        }
+
+        Attack.direction direction = Attack.direction.Neutral;
+        if (left || right && !(up || down)) {
+            direction = Attack.direction.Side;
+        }
+        else if (up && !(right || down)) {
+            direction = Attack.direction.Up;
+        }
+        else if (down && !(up || right)) {
+            direction = Attack.direction.Down;
+        }
+
+        if (m_isGrounded) m_fighter.groundAttack(direction, m_isFacingRight);
+
     }
 
 

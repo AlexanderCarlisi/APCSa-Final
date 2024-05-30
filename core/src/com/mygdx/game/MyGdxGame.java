@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.PlayerController.ControllerType;
 
@@ -20,7 +23,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	public enum entityCategory {
 		Default((short) 0),
 		Ground((short) 1),
-		Fighter((short) 2);
+		Fighter((short) 2),
+		Attack((short) 3);
 
 		private final short id;
 		private entityCategory(short id) {
@@ -78,6 +82,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Keyboard2};
 		
 		m_battle = new Battle(fighters, controllers, new BattleConfig());
+		WORLD.setContactListener(new Attack.AttackCollisionListener());
 	}
 
 
@@ -89,14 +94,32 @@ public class MyGdxGame extends ApplicationAdapter {
         physicsStep(currentTime - m_previousTime);
         m_previousTime = currentTime;
 
+		// Remove Dead Players, or Attacks.
+		Array<Body> bodies = new Array<>();
+		WORLD.getBodies(bodies);
+		for (Body body : bodies) {
+			for (Fixture fixture : body.getFixtureList()) {
+				if (fixture.getUserData() instanceof String && fixture.getUserData().equals("MARKED FOR DELETION")) {
+					WORLD.destroyBody(body);
+				}
+				else if (fixture.getUserData() instanceof Attack.AttackInfo) {
+					Attack.AttackInfo info = (Attack.AttackInfo) fixture.getUserData();
+					if (System.nanoTime() > info.lifeTime) {
+						WORLD.destroyBody(body);
+					}
+				}
+			}
+		}
+
 		CAMERA.update();
-		m_battle.update();
+		if (!m_battle.isFinished) m_battle.update();
 
 		// Draw Characters
 		m_debugRenderer.render(WORLD, CAMERA.combined);
 		m_spriteBatch.setProjectionMatrix(CAMERA.combined);
 		m_shapeRenderer.setProjectionMatrix(CAMERA.combined);
-		m_battle.draw(m_spriteBatch, m_shapeRenderer);
+
+		if (!m_battle.isFinished) m_battle.draw(m_spriteBatch, m_shapeRenderer);
 
 		// Draw Background
 

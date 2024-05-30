@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -7,18 +8,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import java.util.HashMap;
+
 /**
  * Fighter Class
  * 
  */
 public class Fighter {
 
-    /** Array of all Fighters. */
-    // private static final Fighter[] FIGHTERS = new Fighter[] {
-    //     new Fighter("Test", 0.05f, 0.3f, 10f, GDXHelper.generateFixtureDef(1f, 4f, 0f, GDXHelper.PTM(15f), GDXHelper.PTM(25f))),
-	// 	new Fighter("Test2", 0.05f, 0.3f, 10f, GDXHelper.generateFixtureDef(1f, 4f, 0f, GDXHelper.PTM(15f), GDXHelper.PTM(25f)))
-    // };
-
+    /** Body Definition used for each Fighter. */
     private final BodyDef BODY_DEF = GDXHelper.generateBodyDef(BodyType.DynamicBody, new Vector2(0, 0));
 
     /** Name of the Character. */
@@ -47,6 +45,9 @@ public class Fighter {
 
     /** Current health in Percent. */
     private float m_health;
+
+    /** If the Fighter is still in the Battle. */
+    public boolean isDead;
     
 
     /**
@@ -64,8 +65,10 @@ public class Fighter {
         m_runSpeed = runSpeed;
         m_height = height;
         m_width = width;
+        isDead = false;
         m_body = MyGdxGame.WORLD.createBody(BODY_DEF);
         m_fixture = m_body.createFixture(fixtureDef);
+        m_fixture.setUserData(this); // Collider identifier
     }
 
     public String getName() {
@@ -102,6 +105,47 @@ public class Fighter {
 
     public Vector2 getDimensions() {
         return new Vector2(m_width, m_height);
+    }
+
+    public void groundAttack(Attack.direction direction, boolean facingRight) {
+        Vector2 pos = m_body.getPosition();
+        switch(direction) {
+            case Neutral: {
+                new Attack(
+                        this, 2.5f,
+                        facingRight ? new Vector2(pos.x + 0.4f, pos.y) : new Vector2(pos.x - 0.4f, pos.y),
+                        GDXHelper.PTM(20), GDXHelper.PTM(15), false);
+                break;
+            }
+            case Side: {
+                new Attack(
+                        this, 3.3f,
+                        facingRight ? new Vector2(pos.x + 0.5f, pos.y) : new Vector2(pos.x - 0.5f, pos.y),
+                        GDXHelper.PTM(25), GDXHelper.PTM(10), false);
+                break;
+            }
+            case Up: {
+                new Attack(
+                        this, 3.5f,
+                        new Vector2(pos.x, pos.y + 0.4f),
+                        GDXHelper.PTM(20), GDXHelper.PTM(10), false);
+                break;
+            }
+            case Down: {
+                new Attack(
+                        this, 3,
+                        new Vector2(pos.x, pos.y - 0.4f),
+                        GDXHelper.PTM(20), GDXHelper.PTM(15), false);
+                break;
+            }
+            default: {
+                new Attack(
+                        this, 2,
+                        facingRight ? new Vector2(pos.x + 0.5f, pos.y) : new Vector2(pos.x - 0.5f, pos.y),
+                        GDXHelper.PTM(20), GDXHelper.PTM(15), false);
+                break;
+            }
+        }
     }
 
     // public static Fighter getFighter(int index) {

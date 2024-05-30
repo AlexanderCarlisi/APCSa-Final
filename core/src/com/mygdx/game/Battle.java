@@ -32,6 +32,9 @@ public class Battle {
     /** If the startTime in Arena has been set. */
     private boolean m_setStartTime;
 
+    /** If the Battle has Concluded */
+    public boolean isFinished;
+
 
     /**
      * Constructor for the Battle Class.
@@ -66,7 +69,7 @@ public class Battle {
             m_arena.setStartTime(System.nanoTime());
         }
         for (PlayerController controller : m_controllers) {
-            controller.update();
+            if (!controller.getFighter().isDead) controller.update();
         }
         m_arena.update(m_fighters, m_stocks, m_config.timeLimit);
 
@@ -81,8 +84,12 @@ public class Battle {
                         fighter.setHealth(0);
                         fighter.getBody().setTransform(m_arena.getStartingPositions()[i], 0);
                     }
-                    System.out.println("Out of Bounds");
                 }
+            }
+            else if (m_stocks[i] == 0 && !m_fighters[i].isDead) {
+                m_fighters[i].isDead = true;
+                m_fighters[i].getFixture().setUserData("MARKED FOR DELETION");
+                System.out.println("Killed Fighter");
             }
         }
 
@@ -92,6 +99,7 @@ public class Battle {
             if ((m_config.timeLimit - (System.nanoTime() - m_startTime) / 1000000000.0) <= 0) {
                 // End Battle
                 System.out.println("Battle Ended");
+                isFinished = true;
             }
         }
 
@@ -105,6 +113,7 @@ public class Battle {
                 if (alive <= 1) {
                     // End Battle
                     System.out.println("Battle Ended");
+                    isFinished = true;
                 }
             }
         }
