@@ -158,7 +158,9 @@ public class Fighter {
                                 : new Vector2(pos.x + config.offset.x, pos.y + config.offset.y),
                         config.size.x,
                         config.size.y,
-                        config.isProjectile
+                        config.isProjectile,
+                        direction,
+                        facingRight
                 );
                 return config.endLag;
             }

@@ -18,16 +18,43 @@ public class Attack {
                 if (attackInfo.user != target) {
                     target.setHealth(target.getHealth() + attackInfo.attack.m_damage);
 
-                    // Calculate the direction from the attack to the target
-                    Vector2 attackPosition = contact.getFixtureB().getBody().getPosition();
-                    Vector2 targetPosition = contact.getFixtureA().getBody().getPosition();
-                    Vector2 direction = targetPosition.sub(attackPosition).nor();
-
                     // Apply an impulse to the target's body in the calculated direction
                     float impulseMagnitude = (target.getHealth() / 100) * (attackInfo.attack.m_force / target.getWeight());
-                    Vector2 impulse = direction.scl(impulseMagnitude);
+                    Vector2 impulse = new Vector2(impulseMagnitude, impulseMagnitude);
+
+                    switch(attackInfo.attack.dir) {
+                        case Neutral:
+
+                        case Side: {
+                            if (attackInfo.attack.isFacingRight) {
+                                impulse.set(impulse.x, impulse.y / 2);
+                            } else {
+                                impulse.set(-impulse.x, impulse.y / 2);
+                            }
+                            break;
+                        }
+
+                        case Up: {
+                            if (attackInfo.attack.isFacingRight) {
+                                impulse.set(impulse.x / 4, impulse.y * 1.5f);
+                            } else {
+                                impulse.set(-impulse.x / 4, impulse.y * 1.5f);
+                            }
+                            break;
+                        }
+
+                        case Down: {
+                            if (attackInfo.attack.isFacingRight) {
+                                impulse.set(impulse.x / 4, -impulse.y * 1.5f);
+                            } else {
+                                impulse.set(-impulse.x / 4, -impulse.y * 1.5f);
+                            }
+                            break;
+                        }
+                    }
+
                     target.getBody().applyLinearImpulse(impulse, target.getBody().getWorldCenter(), true);
-                    
+
                     attackInfo.attack.dispose();
                 }
             }
@@ -73,15 +100,18 @@ public class Attack {
     private final Fixture m_fixture;
     private final Body m_body;
     private final float m_force;
-    // private final float m_radius;
+    private final direction dir;
+    private final boolean isFacingRight;
 
-    public Attack(Fighter user, float damage, float force, Vector2 pos, float width, float height, boolean isProjectile) {
+    public Attack(Fighter user, float damage, float force, Vector2 pos, float width, float height, boolean isProjectile, direction dir, boolean isFacingRight) {
         m_damage = damage;
         m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyDef.BodyType.StaticBody, pos));
         m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(0, 0, 0, width, height,
                 MyGdxGame.entityCategory.Attack.getID(), MyGdxGame.entityCategory.Fighter.getID()));
         m_fixture.setUserData(new AttackInfo(user, this, isProjectile ? 5 : 0.1f));
         m_force = force;
+        this.dir = dir;
+        this.isFacingRight = isFacingRight;
     }
 
     public void dispose() {
