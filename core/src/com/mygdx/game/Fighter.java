@@ -20,6 +20,7 @@ public class Fighter {
         public final Vector2 offset;
         public final boolean isSideDependent;
         public final float damage;
+        public final float force;
         public final Vector2 size;
         public final boolean isProjectile;
         public final Attack.direction direction;
@@ -27,9 +28,10 @@ public class Fighter {
         public final boolean isSpecialAttack;
         public final float endLag;
 
-        public AttackConfig(Attack.direction direction, float damage, Vector2 offset, Vector2 size, boolean isProjectile, boolean isSideDependent, boolean isGroundAttack, boolean isSpecialAttack, float endLag) {
+        public AttackConfig(Attack.direction direction, float damage, float force, Vector2 offset, Vector2 size, boolean isProjectile, boolean isSideDependent, boolean isGroundAttack, boolean isSpecialAttack, float endLag) {
             this.direction = direction;
             this.damage = damage;
+            this.force = force;
             this.offset = offset;
             this.size = size;
             this.isProjectile = isProjectile;
@@ -148,7 +150,7 @@ public class Fighter {
             if (config.isGroundAttack && config.direction == direction) {
                 new Attack(
                         this,
-                        config.damage,
+                        config.damage, config.force,
                         config.isSideDependent ?
                                 facingRight ?
                                         new Vector2(pos.x + config.offset.x, pos.y + config.offset.y)

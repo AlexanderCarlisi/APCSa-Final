@@ -171,10 +171,7 @@ public class PlayerController {
 
     public void attack(ControllerType ct) {
         // Don't Attack, if still in EndLag.
-        if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) {
-            System.out.println(System.currentTimeMillis() - m_previousAttackTime + " : " + m_endLag);
-            return;
-        }
+        if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) return;
 
         boolean left;
         boolean right;
