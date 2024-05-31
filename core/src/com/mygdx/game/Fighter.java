@@ -17,16 +17,17 @@ import java.util.HashMap;
 public class Fighter {
 
     public static class AttackConfig {
-        public Vector2 offset;
-        public boolean isSideDependent;
-        public float damage;
-        public Vector2 size;
-        public boolean isProjectile;
-        public Attack.direction direction;
-        public boolean isGroundAttack;
-        public boolean isSpecialAttack;
+        public final Vector2 offset;
+        public final boolean isSideDependent;
+        public final float damage;
+        public final Vector2 size;
+        public final boolean isProjectile;
+        public final Attack.direction direction;
+        public final boolean isGroundAttack;
+        public final boolean isSpecialAttack;
+        public final float endLag;
 
-        public AttackConfig(Attack.direction direction, float damage, Vector2 offset, Vector2 size, boolean isProjectile, boolean isSideDependent, boolean isGroundAttack, boolean isSpecialAttack) {
+        public AttackConfig(Attack.direction direction, float damage, Vector2 offset, Vector2 size, boolean isProjectile, boolean isSideDependent, boolean isGroundAttack, boolean isSpecialAttack, float endLag) {
             this.direction = direction;
             this.damage = damage;
             this.offset = offset;
@@ -35,6 +36,7 @@ public class Fighter {
             this.isSideDependent = isSideDependent;
             this.isGroundAttack = isGroundAttack;
             this.isSpecialAttack = isSpecialAttack;
+            this.endLag = endLag;
         }
     }
 
@@ -133,7 +135,14 @@ public class Fighter {
         return new Vector2(m_width, m_height);
     }
 
-    public void groundAttack(Attack.direction direction, boolean facingRight) {
+    /**
+     * Performs a GroundAttack for the Fighter.
+     *
+     * @param direction : Direction given by the PlayerController.
+     * @param facingRight : The Direction the Fighter is facing.
+     * @return EndLag of the used Move.
+     */
+    public float groundAttack(Attack.direction direction, boolean facingRight) {
         Vector2 pos = m_body.getPosition();
         for (AttackConfig config : m_attackConfigs) {
             if (config.isGroundAttack && config.direction == direction) {
@@ -149,7 +158,10 @@ public class Fighter {
                         config.size.y,
                         config.isProjectile
                 );
+                return config.endLag;
             }
         }
+
+        return 0;
     }
 }

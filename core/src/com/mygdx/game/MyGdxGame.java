@@ -76,20 +76,20 @@ public class MyGdxGame extends ApplicationAdapter {
 							new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f,
 									new Vector2(0.4f, 0),
 									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-									false, true, true, false),
+									false, true, true, false, 500f),
 							new Fighter.AttackConfig(Attack.direction.Side, 3,
 									new Vector2(0.5f, 0),
 									new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-									false, true, true, false
+									false, true, true, false, 500f
 							),
 							new Fighter.AttackConfig(Attack.direction.Up, 3,
 									new Vector2(0, 0.4f),
 									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(10)),
-									false, false, true, false),
+									false, false, true, false, 500f),
 							new Fighter.AttackConfig(Attack.direction.Down, 3,
 									new Vector2(0.4f, -0.35f),
 									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-									false, true, true, false)
+									false, true, true, false, 500f)
 					}),
 
 			new Fighter("Test2", 0.1f, 0.7f, 10f, 
@@ -101,20 +101,20 @@ public class MyGdxGame extends ApplicationAdapter {
 							new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f,
 									new Vector2(0.4f, 0),
 									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-									false, true, true, false),
+									false, true, true, false, 0.1f),
 							new Fighter.AttackConfig(Attack.direction.Side, 3,
 									new Vector2(0.5f, 0),
 									new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-									false, true, true, false
+									false, true, true, false, 0.1f
 							),
 							new Fighter.AttackConfig(Attack.direction.Up, 3,
 									new Vector2(0, 0.4f),
 									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(10)),
-									false, false, true, false),
+									false, false, true, false, 0.1f),
 							new Fighter.AttackConfig(Attack.direction.Down, 3,
 									new Vector2(0, 0.45f),
 									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-									false, false, true, false)
+									false, false, true, false, 0.1f)
 					})
 		};
 

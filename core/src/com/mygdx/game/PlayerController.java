@@ -23,7 +23,7 @@ public class PlayerController {
     /**
      * Key Binds Class
      */
-    private class ControlAction {
+    private static class ControlAction {
         private final BooleanSupplier condition;
         private final Runnable action;
     
@@ -73,6 +73,8 @@ public class PlayerController {
     private float m_previousTime;
     private float m_deltaTime;
 
+    private float m_endLag;
+    private long m_previousAttackTime;
 
     /**
      * Constructor for the Controller Class.
@@ -88,6 +90,7 @@ public class PlayerController {
         m_previousY = 0;
         m_deltaTime = 0;
         m_previousTime = 0;
+        m_endLag = 0;
 
         // init bindings
         switch(controllerType) {
@@ -167,6 +170,12 @@ public class PlayerController {
 
 
     public void attack(ControllerType ct) {
+        // Don't Attack, if still in EndLag.
+        if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) {
+            System.out.println(System.currentTimeMillis() - m_previousAttackTime + " : " + m_endLag);
+            return;
+        }
+
         boolean left;
         boolean right;
         boolean up;
@@ -181,7 +190,7 @@ public class PlayerController {
                 break;
             }
 
-            default: {
+            default: { // Keyboard1 binds
                 left = Gdx.input.isKeyPressed(Keys.A);
                 right = Gdx.input.isKeyPressed(Keys.D);
                 up = Gdx.input.isKeyPressed(Keys.W);
@@ -201,8 +210,10 @@ public class PlayerController {
             direction = Attack.direction.Down;
         }
 
-        if (m_isGrounded) m_fighter.groundAttack(direction, m_isFacingRight);
+        if (m_isGrounded)
+            m_endLag = m_fighter.groundAttack(direction, m_isFacingRight);
 
+        m_previousAttackTime = System.currentTimeMillis();
     }
 
 
