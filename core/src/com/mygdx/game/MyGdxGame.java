@@ -64,59 +64,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		m_shapeRenderer = new ShapeRenderer();
 		m_shapeRenderer.setAutoShapeType(true);
 
-		// Will be gotten in the Main Menu, but for now declared here.
-		Fighter[] fighters = new Fighter[] {
-
-			new Fighter("Test", 0.05f, 0.3f, 1f,
-				GDXHelper.generateFixtureDef(
-					1f, 4f, 0f, 
-					GDXHelper.PTM(15f), GDXHelper.PTM(25f), 
-					entityCategory.Fighter.getID(), entityCategory.Ground.getID()), GDXHelper.PTM(15f), GDXHelper.PTM(25f),
-					new Fighter.AttackConfig[] {
-							new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 1f,
-									new Vector2(0.2f, 0),
-									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-									false, true, true, false, 500f),
-							new Fighter.AttackConfig(Attack.direction.Side, 3, 1f,
-									new Vector2(0.5f, 0),
-									new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-									false, true, true, false, 500f
-							),
-							new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
-									new Vector2(0, 0.4f),
-									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(10)),
-									false, false, true, false, 500f),
-							new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
-									new Vector2(0.4f, -0.35f),
-									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-									false, true, true, false, 500f)
-					}),
-
-			new Fighter("Test2", 0.1f, 0.7f, 2f,
-				GDXHelper.generateFixtureDef(
-					1f, 4f, 0f, 
-					GDXHelper.PTM(25f), GDXHelper.PTM(35f), 
-					entityCategory.Fighter.getID(), entityCategory.Ground.getID()), GDXHelper.PTM(25f), GDXHelper.PTM(35f),
-					new Fighter.AttackConfig[] {
-							new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 1f,
-									new Vector2(0.4f, 0),
-									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-									false, true, true, false, 0.1f),
-							new Fighter.AttackConfig(Attack.direction.Side, 3, 1f,
-									new Vector2(0.5f, 0),
-									new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-									false, true, true, false, 0.1f
-							),
-							new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
-									new Vector2(0, 0.4f),
-									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(10)),
-									false, false, true, false, 0.1f),
-							new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
-									new Vector2(0, 0.45f),
-									new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-									false, false, true, false, 0.1f)
-					})
-		};
+		// Should eventually be moved to Render method once properly implemented.
+		// Right now the Fighters are still hard coded in.
+		CharacterSelect charSelect = new CharacterSelect();
+		Fighter[] fighters = charSelect.isFinished();
 
 		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Keyboard2};
 		
