@@ -48,6 +48,7 @@ public class CharacterSelect {
                     fixtureDef = GDXHelper.generateFixtureDef(1f, 4f, 0f, width, height,
                             MyGdxGame.entityCategory.Fighter.getID(), MyGdxGame.entityCategory.Ground.getID());
                     attackConfigs = new Fighter.AttackConfig[] {
+                            // Ground Basic
                             new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f,
                                     new Vector2(0.2f, 0),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
@@ -55,8 +56,7 @@ public class CharacterSelect {
                             new Fighter.AttackConfig(Attack.direction.Side, 3, 0.4f,
                                     new Vector2(0.5f, 0),
                                     new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    false, true, true, false, 500f
-                            ),
+                                    false, true, true, false, 500f),
                             new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
                                     new Vector2(0, 0.4f),
                                     new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
@@ -64,7 +64,43 @@ public class CharacterSelect {
                             new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
                                     new Vector2(0.4f, -0.35f),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, true, true, false, 500f)
+                                    false, true, true, false, 500f),
+
+                            // Air Basic
+                            new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f,
+                                    new Vector2(0.2f, 0),
+                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
+                                    false, true, false, false, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Side, 3, 0.4f,
+                                    new Vector2(0.5f, 0),
+                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
+                                    false, true, false, false, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
+                                    new Vector2(0, 0.4f),
+                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
+                                    false, false, false, false, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
+                                    new Vector2(0.4f, -0.35f),
+                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
+                                    false, false, false, false, 500f),
+
+                            // Specials - isGroundAttack boolean doesn't matter for Specials
+                            new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f,
+                                    new Vector2(0.2f, 0),
+                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
+                                    true, true, false, true, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Side, 3, 0.4f,
+                                    new Vector2(0.5f, 0),
+                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
+                                    false, true, false, true, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
+                                    new Vector2(0, 0.4f),
+                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
+                                    false, false, false, true, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
+                                    new Vector2(0.4f, -0.35f),
+                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
+                                    false, false, false, true, 500f)
                     };
                     break;
                 }

@@ -138,16 +138,16 @@ public class Fighter {
     }
 
     /**
-     * Performs a GroundAttack for the Fighter.
+     * Performs an Attack for the Fighter.
      *
      * @param direction : Direction given by the PlayerController.
      * @param facingRight : The Direction the Fighter is facing.
      * @return EndLag of the used Move.
      */
-    public float groundAttack(Attack.direction direction, boolean facingRight) {
+    public float attack(Attack.direction direction, boolean onGround, boolean facingRight, boolean isSpecial) {
         Vector2 pos = m_body.getPosition();
         for (AttackConfig config : m_attackConfigs) {
-            if (config.isGroundAttack && config.direction == direction) {
+            if (((isSpecial && config.isSpecialAttack) || (!isSpecial && config.isGroundAttack == onGround)) && config.direction == direction) {
                 new Attack(
                         this,
                         config.damage, config.force,
@@ -165,7 +165,6 @@ public class Fighter {
                 return config.endLag;
             }
         }
-
         return 0;
     }
 }

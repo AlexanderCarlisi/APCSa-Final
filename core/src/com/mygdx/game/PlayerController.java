@@ -99,7 +99,8 @@ public class PlayerController {
                         new ControlAction(() -> Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D), () -> moveXAxis(-1)),
                         new ControlAction(() -> Gdx.input.isKeyPressed(Keys.D) && !Gdx.input.isKeyPressed(Keys.A), () -> moveXAxis(1)),
                         new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.SPACE), this::jump),
-                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.J), () -> attack(ControllerType.Keyboard))
+                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.J), () -> attack(ControllerType.Keyboard, false)),
+                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.K), () -> attack(ControllerType.Keyboard, true))
                 };
                 break;
 
@@ -121,9 +122,11 @@ public class PlayerController {
                 }
 
                 m_bindings = new ControlAction[] {
-                    new ControlAction(() -> Math.abs(m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX)) > AXIS_DEADZONE,
-                            () -> moveXAxis(m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX))),
-                    new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_A), this::jump)
+                        new ControlAction(() -> Math.abs(m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX)) > AXIS_DEADZONE,
+                                () -> moveXAxis(m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX))),
+                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_A), this::jump),
+                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_X), () -> attack(ControllerType.Controller, false)),
+                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_Y), () -> attack(ControllerType.Controller, true))
                 };
                 break;
 
@@ -169,7 +172,7 @@ public class PlayerController {
     }
 
 
-    public void attack(ControllerType ct) {
+    public void attack(ControllerType ct, boolean isSpecial) {
         // Don't Attack, if still in EndLag.
         if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) return;
 
@@ -207,9 +210,7 @@ public class PlayerController {
             direction = Attack.direction.Down;
         }
 
-        if (m_isGrounded)
-            m_endLag = m_fighter.groundAttack(direction, m_isFacingRight);
-
+        m_endLag = m_fighter.attack(direction, m_isGrounded, m_isFacingRight, isSpecial);
         m_previousAttackTime = System.currentTimeMillis();
     }
 

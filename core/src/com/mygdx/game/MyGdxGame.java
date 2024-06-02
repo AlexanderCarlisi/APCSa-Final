@@ -69,7 +69,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		CharacterSelect charSelect = new CharacterSelect();
 		Fighter[] fighters = charSelect.isFinished();
 
-		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Keyboard2};
+		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Controller};
 		
 		m_battle = new Battle(fighters, controllers, new BattleConfig());
 		WORLD.setContactListener(new Attack.AttackCollisionListener());
