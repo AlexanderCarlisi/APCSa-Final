@@ -36,7 +36,7 @@ public class Arena {
     // World Objects
     private final Body m_groundBody = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyType.StaticBody, GROUND_POSITION));
     private final Fixture m_groundFixture = m_groundBody.createFixture(
-        GDXHelper.generateFixtureDef(1, 0.1f, 0, GROUND_WIDTH, GROUND_HEIGHT,
+        GDXHelper.generateFixtureDef(1, 0.3f, 0, GROUND_WIDTH, GROUND_HEIGHT,
             MyGdxGame.entityCategory.Ground.getID(), MyGdxGame.entityCategory.Fighter.getID()));
     private final Body m_bedrockBody = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyType.StaticBody, new Vector2(0, -5000)));
     private final Fixture m_bedrockFixture = m_bedrockBody.createFixture(

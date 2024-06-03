@@ -22,22 +22,44 @@ public class Fighter {
         public final float damage;
         public final float force;
         public final Vector2 size;
+        public final Vector2 impulse;
         public final boolean isProjectile;
         public final Attack.direction direction;
         public final boolean isGroundAttack;
         public final boolean isSpecialAttack;
+        public final boolean bringFighter;
+        public final long lifeTime;
         public final float endLag;
 
-        public AttackConfig(Attack.direction direction, float damage, float force, Vector2 offset, Vector2 size, boolean isProjectile, boolean isSideDependent, boolean isGroundAttack, boolean isSpecialAttack, float endLag) {
+        public AttackConfig(Attack.direction direction, float damage, float force, Vector2 offset, Vector2 size, boolean isSideDependent, boolean isGroundAttack, boolean isSpecialAttack, float endLag) {
             this.direction = direction;
             this.damage = damage;
             this.force = force;
             this.offset = offset;
             this.size = size;
-            this.isProjectile = isProjectile;
+            this.impulse = null;
+            this.isProjectile = false;
             this.isSideDependent = isSideDependent;
             this.isGroundAttack = isGroundAttack;
             this.isSpecialAttack = isSpecialAttack;
+            this.bringFighter = false;
+            this.endLag = endLag;
+            this.lifeTime = 0;
+        }
+
+        public AttackConfig(Attack.direction direction, float damage, float force, long lifeTime, Vector2 offset, Vector2 size, Vector2 impulse, boolean isGroundAttack, boolean isSpecialAttack, boolean bringFighter, float endLag) {
+            this.isProjectile = true;
+            this.direction = direction;
+            this.damage = damage;
+            this.force = force;
+            this.lifeTime = lifeTime;
+            this.offset = offset;
+            this.size = size;
+            this.impulse = impulse;
+            this.isSideDependent = false;
+            this.isGroundAttack = isGroundAttack;
+            this.isSpecialAttack = isSpecialAttack;
+            this.bringFighter = bringFighter;
             this.endLag = endLag;
         }
     }
@@ -100,7 +122,7 @@ public class Fighter {
         m_fixture.setUserData(this); // Collider identifier
         m_attackConfigs = attackConfigs;
 
-        // m_body.setGravityScale(0.1f);
+        m_body.setGravityScale(0.1f);
     }
 
     public String getName() {
@@ -150,20 +172,29 @@ public class Fighter {
         Vector2 pos = m_body.getPosition();
         for (AttackConfig config : m_attackConfigs) {
             if (((isSpecial && config.isSpecialAttack) || (!isSpecial && config.isGroundAttack == onGround)) && config.direction == direction) {
-                new Attack(
-                        this,
-                        config.damage, config.force,
-                        config.isSideDependent ?
-                                facingRight ?
-                                        new Vector2(pos.x + config.offset.x, pos.y + config.offset.y)
-                                        : new Vector2(pos.x - config.offset.x, pos.y + config.offset.y)
-                                : new Vector2(pos.x + config.offset.x, pos.y + config.offset.y),
-                        config.size.x,
-                        config.size.y,
-                        config.isProjectile,
-                        direction,
-                        facingRight
-                );
+                if (!config.isProjectile)
+                    new Attack(
+                            this,
+                            config.damage, config.force,
+                            config.isSideDependent ?
+                                    facingRight ?
+                                            new Vector2(pos.x + config.offset.x, pos.y + config.offset.y) :
+                                            new Vector2(pos.x - config.offset.x, pos.y + config.offset.y)
+                                    : new Vector2(pos.x + config.offset.x, pos.y + config.offset.y),
+                            config.size,
+                            direction,
+                            facingRight);
+                else
+                    new Attack(
+                            this,
+                            config.damage, config.force, config.lifeTime, config.bringFighter,
+                            facingRight ?
+                                    new Vector2(pos.x + config.offset.x, pos.y + config.offset.y) :
+                                    new Vector2(pos.x - config.offset.x, pos.y + config.offset.y),
+                            config.impulse,
+                            config.size,
+                            direction,
+                            facingRight);
                 return config.endLag;
             }
         }

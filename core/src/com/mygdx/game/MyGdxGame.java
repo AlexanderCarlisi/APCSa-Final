@@ -97,8 +97,6 @@ public class MyGdxGame extends ApplicationAdapter {
 					if (System.currentTimeMillis() > info.lifeTime) {
 						WORLD.destroyBody(body);
 					}
-//					System.out.print(System.nanoTime() + " : " + info.lifeTime);
-
 				}
 			}
 		}

@@ -103,19 +103,35 @@ public class Attack {
     private final direction dir;
     private final boolean isFacingRight;
 
-    public Attack(Fighter user, float damage, float force, Vector2 pos, float width, float height, boolean isProjectile, direction dir, boolean isFacingRight) {
+
+    public Attack(Fighter user, float damage, float force, Vector2 pos, Vector2 size, direction dir, boolean isFacingRight) {
         m_damage = damage;
-        m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(isProjectile ? BodyDef.BodyType.DynamicBody : BodyDef.BodyType.StaticBody, pos));
-        m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(0, 0, 0, width, height,
+        m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyDef.BodyType.StaticBody, pos));
+        m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(0, 0, 0, size.x, size.y,
                 MyGdxGame.entityCategory.Attack.getID(), MyGdxGame.entityCategory.Fighter.getID()));
-        m_fixture.setUserData(new AttackInfo(user, this, isProjectile ? (long)5000 : (long)50));
+        m_fixture.setUserData(new AttackInfo(user, this, 50));
+        m_force = force;
+        this.dir = dir;
+        this.isFacingRight = isFacingRight;
+    }
+
+
+    public Attack(Fighter user, float damage, float force, long lifeTime, boolean bringFighter, Vector2 startingPos, Vector2 impulse, Vector2 size, direction dir, boolean isFacingRight) {
+        m_damage = damage;
+        m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyDef.BodyType.DynamicBody, startingPos));
+        m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(0, 0, 0, size.x, size.y,
+            MyGdxGame.entityCategory.Attack.getID(), MyGdxGame.entityCategory.Fighter.getID()));
+        m_fixture.setUserData(new AttackInfo(user, this, lifeTime));
         m_force = force;
         this.dir = dir;
         this.isFacingRight = isFacingRight;
 
-        if (isProjectile) {
-            m_body.setGravityScale(0);
-            m_body.applyLinearImpulse(isFacingRight ? 0.5f : -0.5f, 0f, pos.x, pos.y, true);
+        m_body.setGravityScale(0);
+        Vector2 updatedImpulse = new Vector2(isFacingRight ? impulse.x : -impulse.x, impulse.y);
+        m_body.applyLinearImpulse(updatedImpulse, startingPos, true);
+
+        if (bringFighter) {
+            user.getBody().applyLinearImpulse(updatedImpulse, startingPos, true);
         }
     }
 

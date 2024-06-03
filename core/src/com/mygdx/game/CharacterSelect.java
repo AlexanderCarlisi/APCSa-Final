@@ -40,8 +40,8 @@ public class CharacterSelect {
             switch(m_selectionIndexs[i]) {
                 case 0: {
                     name = "Test1";
-                    runSpeed = 0.05f;
-                    jumpForce = 0.3f;
+                    runSpeed = 0.01f;
+                    jumpForce = 0.08f;
                     weight = 1f;
                     width = GDXHelper.PTM(15f);
                     height = GDXHelper.PTM(25f);
@@ -52,55 +52,57 @@ public class CharacterSelect {
                             new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f,
                                     new Vector2(0.2f, 0),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, true, true, false, 500f),
+                                    true, true, false, 500f),
                             new Fighter.AttackConfig(Attack.direction.Side, 3, 0.4f,
                                     new Vector2(0.5f, 0),
                                     new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    false, true, true, false, 500f),
+                                    true, true, false, 500f),
                             new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
                                     new Vector2(0, 0.4f),
                                     new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    false, false, true, false, 500f),
+                                    false, true, false, 500f),
                             new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
                                     new Vector2(0.4f, -0.35f),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, true, true, false, 500f),
+                                    true, true, false, 500f),
 
                             // Air Basic
                             new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f,
                                     new Vector2(0.2f, 0),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, true, false, false, 500f),
+                                    true, false, false, 500f),
                             new Fighter.AttackConfig(Attack.direction.Side, 3, 0.4f,
                                     new Vector2(0.5f, 0),
                                     new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    false, true, false, false, 500f),
+                                    true, false, false, 500f),
                             new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
                                     new Vector2(0, 0.4f),
                                     new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    false, false, false, false, 500f),
+                                    false, false, false, 500f),
                             new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
                                     new Vector2(0.4f, -0.35f),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, false, false, false, 500f),
+                                    false, false, false, 500f),
 
-                            // Specials - isGroundAttack boolean doesn't matter for Specials
-                            new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f,
+                            // Specials
+                            new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f, 5000,
                                     new Vector2(0.2f, 0),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    true, true, false, true, 500f),
+                                    new Vector2(0.5f, 0f),
+                                    false, true, false, 400f),
                             new Fighter.AttackConfig(Attack.direction.Side, 3, 0.4f,
                                     new Vector2(0.5f, 0),
                                     new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    false, true, false, true, 500f),
-                            new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
+                                    true, false, true, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Up, 3, 1f, 100,
                                     new Vector2(0, 0.4f),
                                     new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    false, false, false, true, 500f),
+                                    new Vector2(0f, 0.1f),
+                                    false, true, true, 500f),
                             new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
                                     new Vector2(0.4f, -0.35f),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, false, false, true, 500f)
+                                    false, false, true, 500f)
                     };
                     break;
                 }
@@ -115,23 +117,61 @@ public class CharacterSelect {
                     fixtureDef = GDXHelper.generateFixtureDef(1f, 4f, 0f, width, height,
                             MyGdxGame.entityCategory.Fighter.getID(), MyGdxGame.entityCategory.Ground.getID());
                     attackConfigs = new Fighter.AttackConfig[] {
+                            // Ground Basic
                             new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f,
                                     new Vector2(0.2f, 0),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, true, true, false, 500f),
-                            new Fighter.AttackConfig(Attack.direction.Side, 3, 0.6f,
+                                    true, true, false, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Side, 3, 0.4f,
                                     new Vector2(0.5f, 0),
                                     new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    false, true, true, false, 500f
-                            ),
-                            new Fighter.AttackConfig(Attack.direction.Up, 3, 1.5f,
+                                    true, true, false, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
                                     new Vector2(0, 0.4f),
                                     new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    false, false, true, false, 500f),
-                            new Fighter.AttackConfig(Attack.direction.Down, 3, 1.2f,
+                                    false, true, false, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
                                     new Vector2(0.4f, -0.35f),
                                     new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, true, true, false, 500f)
+                                    true, true, false, 500f),
+
+                            // Air Basic
+                            new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f,
+                                    new Vector2(0.2f, 0),
+                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
+                                    true, false, false, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Side, 3, 0.4f,
+                                    new Vector2(0.5f, 0),
+                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
+                                    true, false, false, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Up, 3, 1f,
+                                    new Vector2(0, 0.4f),
+                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
+                                    false, false, false, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
+                                    new Vector2(0.4f, -0.35f),
+                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
+                                    false, false, false, 500f),
+
+                            // Specials
+                            new Fighter.AttackConfig(Attack.direction.Neutral, 1.5f, 0.3f, 5000,
+                                    new Vector2(0.2f, 0),
+                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
+                                    new Vector2(0.5f, 0f),
+                                    false, true, false, 400f),
+                            new Fighter.AttackConfig(Attack.direction.Side, 3, 0.4f,
+                                    new Vector2(0.5f, 0),
+                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
+                                    true, false, true, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Up, 3, 1f, 100,
+                                    new Vector2(0, 0.4f),
+                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
+                                    new Vector2(0f, 0.1f),
+                                    false, true, true, 500f),
+                            new Fighter.AttackConfig(Attack.direction.Down, 3, 1f,
+                                    new Vector2(0.4f, -0.35f),
+                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
+                                    false, false, true, 500f)
                     };
                     break;
                 }

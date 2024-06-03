@@ -42,7 +42,7 @@ public class PlayerController {
 
     public enum ControllerType {Keyboard, Keyboard2, Controller};
     private static final float MAX_VELOCITY_GROUNDED = 0.4f; // Should become character specific
-    private static final float MAX_VELOCITY_AIRBORNE = 0.2f; // Should become character specific
+    private static final float MAX_VELOCITY_AIRBORNE = 0.4f; // Should become character specific
     private static final long JUMP_DEBOUNCE = 125; // milliseconds
     private static final float AXIS_DEADZONE = 0.2f;
     
@@ -147,8 +147,9 @@ public class PlayerController {
         Vector2 pos = body.getPosition();
         Vector2 vel = body.getLinearVelocity();
         float maxVelocity = m_isGrounded ? MAX_VELOCITY_GROUNDED : MAX_VELOCITY_AIRBORNE;
+        float signum = Math.signum(modifier);
 
-        if (Math.abs(vel.x) < maxVelocity) {
+        if ((signum == 1 && vel.x < maxVelocity) || (signum == -1 && vel.x > -maxVelocity)) {
             body.applyLinearImpulse(m_fighter.getRunSpeed() * modifier, 0, pos.x, pos.y, true);
         }
 
