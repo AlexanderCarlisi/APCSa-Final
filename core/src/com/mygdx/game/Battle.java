@@ -83,7 +83,7 @@ public class Battle {
                     if (m_stocks[i] > 0 || m_stocks[i] == -1) {
                         fighter.setHealth(0);
                         fighter.getBody().setTransform(m_arena.getStartingPositions()[i], 0);
-
+                        fighter.getBody().setLinearVelocity(0, 0);
                     }
                 }
             }
