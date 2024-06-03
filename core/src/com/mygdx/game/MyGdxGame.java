@@ -94,9 +94,11 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 				else if (fixture.getUserData() instanceof Attack.AttackInfo) {
 					Attack.AttackInfo info = (Attack.AttackInfo) fixture.getUserData();
-					if (System.nanoTime() > info.lifeTime) {
+					if (System.currentTimeMillis() > info.lifeTime) {
 						WORLD.destroyBody(body);
 					}
+//					System.out.print(System.nanoTime() + " : " + info.lifeTime);
+
 				}
 			}
 		}

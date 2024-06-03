@@ -79,12 +79,12 @@ public class Attack {
     public static class AttackInfo {
         public Fighter user;
         public Attack attack;
-        public float lifeTime;
+        public long lifeTime;
 
-        public AttackInfo(Fighter fighter, Attack _attack, float time) {
+        public AttackInfo(Fighter fighter, Attack _attack, long time) {
             user = fighter;
             attack = _attack;
-            lifeTime = System.nanoTime() + time;
+            lifeTime = System.currentTimeMillis() + time;
         }
     }
 
@@ -105,13 +105,18 @@ public class Attack {
 
     public Attack(Fighter user, float damage, float force, Vector2 pos, float width, float height, boolean isProjectile, direction dir, boolean isFacingRight) {
         m_damage = damage;
-        m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyDef.BodyType.StaticBody, pos));
+        m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(isProjectile ? BodyDef.BodyType.DynamicBody : BodyDef.BodyType.StaticBody, pos));
         m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(0, 0, 0, width, height,
                 MyGdxGame.entityCategory.Attack.getID(), MyGdxGame.entityCategory.Fighter.getID()));
-        m_fixture.setUserData(new AttackInfo(user, this, isProjectile ? 5 : 0.1f));
+        m_fixture.setUserData(new AttackInfo(user, this, isProjectile ? (long)5000 : (long)50));
         m_force = force;
         this.dir = dir;
         this.isFacingRight = isFacingRight;
+
+        if (isProjectile) {
+            m_body.setGravityScale(0);
+            m_body.applyLinearImpulse(isFacingRight ? 0.5f : -0.5f, 0f, pos.x, pos.y, true);
+        }
     }
 
     public void dispose() {

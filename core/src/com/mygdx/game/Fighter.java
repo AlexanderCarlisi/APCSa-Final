@@ -99,6 +99,8 @@ public class Fighter {
         m_fixture = m_body.createFixture(fixtureDef);
         m_fixture.setUserData(this); // Collider identifier
         m_attackConfigs = attackConfigs;
+
+        // m_body.setGravityScale(0.1f);
     }
 
     public String getName() {
