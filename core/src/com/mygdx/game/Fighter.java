@@ -26,12 +26,13 @@ public class Fighter {
         public final boolean isProjectile;
         public final Attack.direction direction;
         public final boolean isGroundAttack;
-        public final boolean isSpecialAttack;
+        public final Attack.attackType attackType;
         public final boolean bringFighter;
         public final long lifeTime;
         public final float endLag;
 
-        public AttackConfig(Attack.direction direction, float damage, float force, Vector2 offset, Vector2 size, boolean isSideDependent, boolean isGroundAttack, boolean isSpecialAttack, float endLag) {
+        public AttackConfig(Attack.attackType attackType, Attack.direction direction, float damage, float force, Vector2 offset, Vector2 size, boolean isSideDependent, boolean isGroundAttack, float endLag) {
+            this.attackType = attackType;
             this.direction = direction;
             this.damage = damage;
             this.force = force;
@@ -41,14 +42,14 @@ public class Fighter {
             this.isProjectile = false;
             this.isSideDependent = isSideDependent;
             this.isGroundAttack = isGroundAttack;
-            this.isSpecialAttack = isSpecialAttack;
             this.bringFighter = false;
             this.endLag = endLag;
             this.lifeTime = 0;
         }
 
-        public AttackConfig(Attack.direction direction, float damage, float force, long lifeTime, Vector2 offset, Vector2 size, Vector2 impulse, boolean isGroundAttack, boolean isSpecialAttack, boolean bringFighter, float endLag) {
+        public AttackConfig(Attack.attackType attackType, Attack.direction direction, float damage, float force, long lifeTime, Vector2 offset, Vector2 size, Vector2 impulse, boolean isGroundAttack, boolean bringFighter, float endLag) {
             this.isProjectile = true;
+            this.attackType = attackType;
             this.direction = direction;
             this.damage = damage;
             this.force = force;
@@ -58,7 +59,6 @@ public class Fighter {
             this.impulse = impulse;
             this.isSideDependent = false;
             this.isGroundAttack = isGroundAttack;
-            this.isSpecialAttack = isSpecialAttack;
             this.bringFighter = bringFighter;
             this.endLag = endLag;
         }
@@ -168,10 +168,10 @@ public class Fighter {
      * @param facingRight : The Direction the Fighter is facing.
      * @return EndLag of the used Move.
      */
-    public float attack(Attack.direction direction, boolean onGround, boolean facingRight, boolean isSpecial) {
+    public float attack(Attack.attackType attackType, Attack.direction direction, boolean onGround, boolean facingRight) {
         Vector2 pos = m_body.getPosition();
         for (AttackConfig config : m_attackConfigs) {
-            if (((isSpecial && config.isSpecialAttack) || (!isSpecial && config.isGroundAttack == onGround)) && config.direction == direction) {
+            if (config.attackType == attackType && (attackType == Attack.attackType.Special || (attackType == Attack.attackType.Basic || attackType == Attack.attackType.Ultimate && onGround == config.isGroundAttack) || (attackType == Attack.attackType.Smash && onGround)) && config.direction == direction) {
                 if (!config.isProjectile)
                     new Attack(
                             this,

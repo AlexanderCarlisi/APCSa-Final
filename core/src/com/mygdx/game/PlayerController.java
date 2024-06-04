@@ -61,6 +61,7 @@ public class PlayerController {
     private final Fighter m_fighter;
 
     private final ControlAction[] m_bindings;
+    private final ControllerType m_controllerType;
     private SDL2Controller m_controller;
 
     private boolean m_isGrounded;
@@ -91,16 +92,19 @@ public class PlayerController {
         m_deltaTime = 0;
         m_previousTime = 0;
         m_endLag = 0;
+        m_controllerType = controllerType;
 
         // init bindings
-        switch(controllerType) {
+        switch(m_controllerType) {
             case Keyboard:
                 m_bindings = new ControlAction[] {
                         new ControlAction(() -> Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D), () -> moveXAxis(-1)),
                         new ControlAction(() -> Gdx.input.isKeyPressed(Keys.D) && !Gdx.input.isKeyPressed(Keys.A), () -> moveXAxis(1)),
                         new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.SPACE), this::jump),
-                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.J), () -> attack(ControllerType.Keyboard, false)),
-                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.K), () -> attack(ControllerType.Keyboard, true))
+                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.J), () -> attack(Attack.attackType.Basic)),
+                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.K), () -> attack(Attack.attackType.Special)),
+                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.L), () -> attack(Attack.attackType.Smash)),
+                        new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.I), () -> attack(Attack.attackType.Ultimate))
                 };
                 break;
 
@@ -125,8 +129,9 @@ public class PlayerController {
                         new ControlAction(() -> Math.abs(m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX)) > AXIS_DEADZONE,
                                 () -> moveXAxis(m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX))),
                         new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_A), this::jump),
-                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_X), () -> attack(ControllerType.Controller, false)),
-                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_Y), () -> attack(ControllerType.Controller, true))
+                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_X), () -> attack(Attack.attackType.Basic)),
+                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_Y), () -> attack(Attack.attackType.Special)),
+                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_B), () -> attack(Attack.attackType.Smash))
                 };
                 break;
 
@@ -173,7 +178,7 @@ public class PlayerController {
     }
 
 
-    public void attack(ControllerType ct, boolean isSpecial) {
+    public void attack(Attack.attackType attackType) {
         // Don't Attack, if still in EndLag.
         if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) return;
 
@@ -182,7 +187,7 @@ public class PlayerController {
         boolean up;
         boolean down;
 
-        switch(ct) {
+        switch(m_controllerType) {
             case Controller: {
                 left = m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX) < -AXIS_DEADZONE;
                 right = m_controller.getAxis(SDL.SDL_CONTROLLER_AXIS_LEFTX) > AXIS_DEADZONE;
@@ -211,7 +216,7 @@ public class PlayerController {
             direction = Attack.direction.Down;
         }
 
-        m_endLag = m_fighter.attack(direction, m_isGrounded, m_isFacingRight, isSpecial);
+        m_endLag = m_fighter.attack(attackType, direction, m_isGrounded, m_isFacingRight);
         m_previousAttackTime = System.currentTimeMillis();
     }
 
@@ -232,6 +237,8 @@ public class PlayerController {
         if (fallSpeed < -0.4) {
             m_isFalling = true;
         }
+
+        if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) return;
 
         // Bindings
         for (ControlAction action : m_bindings) {

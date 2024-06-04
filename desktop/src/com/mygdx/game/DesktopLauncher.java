@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.useVsync(true);
-		config.setTitle("APCSA Final Fighter Game");
+		config.setTitle("The Fantastical Goobers");
 		config.setWindowedMode(1280, 720); // size for now, probably shouldnt change it
 		new Lwjgl3Application(new MyGdxGame(), config);
 	}

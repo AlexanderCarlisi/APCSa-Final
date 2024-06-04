@@ -96,6 +96,13 @@ public class Attack {
         Down
     }
 
+    public enum attackType {
+        Basic,
+        Special,
+        Smash,
+        Ultimate
+    }
+
     private final float m_damage;
     private final Fixture m_fixture;
     private final Body m_body;
@@ -106,13 +113,15 @@ public class Attack {
 
     public Attack(Fighter user, float damage, float force, Vector2 pos, Vector2 size, direction dir, boolean isFacingRight) {
         m_damage = damage;
-        m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyDef.BodyType.StaticBody, pos));
+        m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyDef.BodyType.DynamicBody, pos));
         m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(0, 0, 0, size.x, size.y,
                 MyGdxGame.entityCategory.Attack.getID(), MyGdxGame.entityCategory.Fighter.getID()));
+        m_fixture.setSensor(true);
         m_fixture.setUserData(new AttackInfo(user, this, 50));
         m_force = force;
         this.dir = dir;
         this.isFacingRight = isFacingRight;
+        m_body.setGravityScale(0);
     }
 
 
@@ -121,10 +130,12 @@ public class Attack {
         m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyDef.BodyType.DynamicBody, startingPos));
         m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(0, 0, 0, size.x, size.y,
             MyGdxGame.entityCategory.Attack.getID(), MyGdxGame.entityCategory.Fighter.getID()));
+        m_fixture.setSensor(true);
         m_fixture.setUserData(new AttackInfo(user, this, lifeTime));
         m_force = force;
         this.dir = dir;
         this.isFacingRight = isFacingRight;
+        m_body.setGravityScale(0);
 
         m_body.setGravityScale(0);
         Vector2 updatedImpulse = new Vector2(isFacingRight ? impulse.x : -impulse.x, impulse.y);
