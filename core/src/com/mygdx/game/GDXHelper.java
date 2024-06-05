@@ -99,4 +99,22 @@ public class GDXHelper {
     public static void drawRect(ShapeRenderer shapeRenderer, float posX, float posY, float width, float height) {
         shapeRenderer.rect(posX - width, posY - height, width * 2, height * 2);
     }
+
+
+    /**
+     * The Transform between Box2d and LibGDX is weird, this will convert LibGDX drawing
+     * pos to Box2d's drawing pose. This uses Box2d's position as the real one, and LibGDX as
+     * the overlay.
+     *
+     * <p>
+     * Requires shapeRenderer to have already been begun!
+     *
+     * @param shapeRenderer
+     * @param posX
+     * @param posY
+     * @param radius
+     */
+    public static void drawCircle(ShapeRenderer shapeRenderer, float posX, float posY, float radius) {
+        shapeRenderer.circle(posX - radius, posY - radius, radius * 2);
+    }
 }

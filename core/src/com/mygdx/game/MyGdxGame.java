@@ -37,45 +37,47 @@ public class MyGdxGame extends ApplicationAdapter {
 				Fighter target = (Fighter) contact.getFixtureA().getUserData();
 
 				if (attackInfo.user != target) {
-					target.setHealth(target.getHealth() + attackInfo.attack.m_damage);
-					attackInfo.user.setUltMeter(attackInfo.user.getUltMeter() + attackInfo.attack.ultPercent);
+					if (!target.getController().isGuarding()) {
+						target.setHealth(target.getHealth() + attackInfo.attack.m_damage);
+						attackInfo.user.setUltMeter(attackInfo.user.getUltMeter() + attackInfo.attack.ultPercent);
 
-					// Apply an impulse to the target's body in the calculated direction
-					float impulseMagnitude = (target.getHealth() / 100 / target.getWeight()) * (attackInfo.attack.m_force);
-					Vector2 impulse = new Vector2(impulseMagnitude, impulseMagnitude);
+						// Apply an impulse to the target's body in the calculated direction
+						float impulseMagnitude = (target.getHealth() / 100 / target.getWeight()) * (attackInfo.attack.m_force);
+						Vector2 impulse = new Vector2(impulseMagnitude, impulseMagnitude);
 
-					switch(attackInfo.attack.dir) {
-						case Neutral:
+						switch(attackInfo.attack.dir) {
+							case Neutral:
 
-						case Side: {
-							if (attackInfo.attack.isFacingRight) {
-								impulse.set(impulse.x, impulse.y / 2);
-							} else {
-								impulse.set(-impulse.x, impulse.y / 2);
+							case Side: {
+								if (attackInfo.attack.isFacingRight) {
+									impulse.set(impulse.x, impulse.y / 2);
+								} else {
+									impulse.set(-impulse.x, impulse.y / 2);
+								}
+								break;
 							}
-							break;
+
+							case Up: {
+								if (attackInfo.attack.isFacingRight) {
+									impulse.set(impulse.x / 4, impulse.y * 1.5f);
+								} else {
+									impulse.set(-impulse.x / 4, impulse.y * 1.5f);
+								}
+								break;
+							}
+
+							case Down: {
+								if (attackInfo.attack.isFacingRight) {
+									impulse.set(impulse.x / 4, -impulse.y * 1.5f);
+								} else {
+									impulse.set(-impulse.x / 4, -impulse.y * 1.5f);
+								}
+								break;
+							}
 						}
 
-						case Up: {
-							if (attackInfo.attack.isFacingRight) {
-								impulse.set(impulse.x / 4, impulse.y * 1.5f);
-							} else {
-								impulse.set(-impulse.x / 4, impulse.y * 1.5f);
-							}
-							break;
-						}
-
-						case Down: {
-							if (attackInfo.attack.isFacingRight) {
-								impulse.set(impulse.x / 4, -impulse.y * 1.5f);
-							} else {
-								impulse.set(-impulse.x / 4, -impulse.y * 1.5f);
-							}
-							break;
-						}
+						target.getBody().applyLinearImpulse(impulse, target.getBody().getWorldCenter(), true);
 					}
-
-					target.getBody().applyLinearImpulse(impulse, target.getBody().getWorldCenter(), true);
 					attackInfo.attack.dispose();
 				}
 			}

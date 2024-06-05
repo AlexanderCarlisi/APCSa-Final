@@ -42,6 +42,9 @@ public class PlayerController {
     private static final float MAX_VELOCITY_AIRBORNE = 0.4f; // Should become character specific
     private static final long JUMP_DEBOUNCE = 125; // milliseconds
     private static final float AXIS_DEADZONE = 0.2f;
+    private static final long GUARDBREAK_STUNTIME = 125;
+    private static final float GUARD_DEGRADE = 0.25f;
+    private static final float GUARD_GENERATE = 0.25f;
 
     private final Fighter m_fighter;
 
@@ -53,6 +56,7 @@ public class PlayerController {
     private boolean m_hasDoubleJump;
     private long m_lastJump;
     private boolean m_isFacingRight;
+    private boolean m_isGuarding;
 
     private float m_previousY;
     private long m_previousTime;
@@ -60,7 +64,9 @@ public class PlayerController {
 
     private float m_endLag;
     private long m_previousAttackTime;
+    // private long m_initalGuardTime;
     private float m_fallSpeed;
+    private float m_guardPercent;
 
     /**
      * Constructor for the Controller Class.
@@ -77,6 +83,7 @@ public class PlayerController {
         m_previousTime = 0;
         m_endLag = 0;
         m_fallSpeed = 0;
+        m_guardPercent = 100;
         m_controllerType = controllerType;
 
         // init bindings
@@ -86,6 +93,8 @@ public class PlayerController {
                         new ControlAction(() -> Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D), () -> moveXAxis(-1)),
                         new ControlAction(() -> Gdx.input.isKeyPressed(Keys.D) && !Gdx.input.isKeyPressed(Keys.A), () -> moveXAxis(1)),
                         new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.SPACE), this::jump),
+                        new ControlAction(() -> Gdx.input.isKeyPressed(Keys.O), this::guard),
+                        new ControlAction(() -> !Gdx.input.isKeyPressed(Keys.O), this::stopGuard),
                         new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.J), () -> attack(Attack.attackType.Basic)),
                         new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.K), () -> attack(Attack.attackType.Special)),
                         new ControlAction(() -> Gdx.input.isKeyJustPressed(Keys.L), () -> attack(Attack.attackType.Smash)),
@@ -133,6 +142,8 @@ public class PlayerController {
      * @param modifier value to modify the move direction by
      */
     public void moveXAxis(float modifier) {
+        if (m_isGuarding) return;
+
         Body body = m_fighter.getBody();
         Vector2 pos = body.getPosition();
         Vector2 vel = body.getLinearVelocity();
@@ -148,6 +159,8 @@ public class PlayerController {
 
 
     public void jump() {
+        if (m_isGuarding) return;
+
         Body body = m_fighter.getBody();
         Vector2 pos = body.getPosition();
         if (m_isGrounded && System.currentTimeMillis() - m_lastJump > JUMP_DEBOUNCE) {
@@ -164,7 +177,18 @@ public class PlayerController {
     }
 
 
+    private void guard() {
+        if (m_guardPercent > 0)
+            m_isGuarding = true;
+    }
+    private void stopGuard() {
+        m_isGuarding = false;
+    }
+
+
     public void attack(Attack.attackType attackType) {
+        if (m_isGuarding) return;
+
         // Don't Attack, if still in EndLag.
         if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) return;
 
@@ -212,6 +236,19 @@ public class PlayerController {
 
 
     public void update() {
+        System.out.println(m_guardPercent);
+        // Guarding Check
+        if (m_isGuarding) {
+            m_guardPercent -= GUARD_DEGRADE; // Degrade Shield
+            // Shield Break
+            if (m_guardPercent <= 0) {
+                m_guardPercent = -GUARDBREAK_STUNTIME;
+                m_isGuarding = false;
+            }
+        }
+        if (!m_isGuarding && m_guardPercent < 100 - GUARD_GENERATE) m_guardPercent += GUARD_GENERATE; // Regen Shield
+        if (m_guardPercent <= 0) return; // in Guard Break
+
         Body body = m_fighter.getBody();
         Vector2 pos = body.getPosition();
 
@@ -239,5 +276,9 @@ public class PlayerController {
 
     public void setGrounded() {
         m_isGrounded = true;
+    }
+
+    public boolean isGuarding() {
+        return m_isGuarding;
     }
 }
