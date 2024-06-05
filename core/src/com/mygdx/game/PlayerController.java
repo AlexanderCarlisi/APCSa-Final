@@ -66,16 +66,16 @@ public class PlayerController {
 
     private boolean m_isGrounded;
     private boolean m_hasDoubleJump;
-    private boolean m_isFalling;
     private long m_lastJump;
     private boolean m_isFacingRight;
 
     private float m_previousY;
-    private float m_previousTime;
-    private float m_deltaTime;
+    private long m_previousTime;
+    private long m_deltaTime;
 
     private float m_endLag;
     private long m_previousAttackTime;
+    private float m_fallSpeed;
 
     /**
      * Constructor for the Controller Class.
@@ -86,12 +86,12 @@ public class PlayerController {
         m_fighter = fighter;
         m_isGrounded = false;
         m_hasDoubleJump = false;
-        m_isFalling = false;
         m_isFacingRight = false;
         m_previousY = 0;
         m_deltaTime = 0;
         m_previousTime = 0;
         m_endLag = 0;
+        m_fallSpeed = 0;
         m_controllerType = controllerType;
 
         // init bindings
@@ -171,7 +171,7 @@ public class PlayerController {
         }
         else if (!m_isGrounded && m_hasDoubleJump && System.currentTimeMillis() - m_lastJump > JUMP_DEBOUNCE) {
             // body.applyLinearImpulse(0, m_fighter.getJumpForce() * (m_isFalling ? 3f : 1.35f), pos.x, pos.y, true);
-            body.applyLinearImpulse(0, m_fighter.getJumpForce() * 1.35f, pos.x, pos.y, true);
+            body.applyLinearImpulse(0, m_fighter.getJumpForce() * ((m_fallSpeed < 0) ? m_fallSpeed * -1.5f : 1), pos.x, pos.y, true);
             m_lastJump = System.currentTimeMillis();
             m_hasDoubleJump = false;
         }
@@ -231,14 +231,10 @@ public class PlayerController {
         Vector2 to = new Vector2(pos.x, pos.y - m_fighter.getDimensions().y / 2 - 0.3f);
         MyGdxGame.WORLD.rayCast(m_callback, from, to);
 
-        m_isFalling = false;
         m_deltaTime = System.currentTimeMillis() - m_previousTime;
-        float fallSpeed = Math.abs(m_previousY) - Math.abs(pos.y);
-        if (fallSpeed < -0.4) {
-            m_isFalling = true;
-        }
-
+        m_fallSpeed = (pos.y - m_previousY) * m_deltaTime;
         if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) return;
+        System.out.println(m_fallSpeed);
 
         // Bindings
         for (ControlAction action : m_bindings) {

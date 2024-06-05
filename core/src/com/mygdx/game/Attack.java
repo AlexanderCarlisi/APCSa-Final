@@ -19,7 +19,7 @@ public class Attack {
                     target.setHealth(target.getHealth() + attackInfo.attack.m_damage);
 
                     // Apply an impulse to the target's body in the calculated direction
-                    float impulseMagnitude = (target.getHealth() / 100) * (attackInfo.attack.m_force / target.getWeight());
+                    float impulseMagnitude = (target.getHealth() / 100 / target.getWeight()) * (attackInfo.attack.m_force);
                     Vector2 impulse = new Vector2(impulseMagnitude, impulseMagnitude);
 
                     switch(attackInfo.attack.dir) {
