@@ -38,6 +38,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 				if (attackInfo.user != target) {
 					target.setHealth(target.getHealth() + attackInfo.attack.m_damage);
+					attackInfo.user.setUltMeter(attackInfo.user.getUltMeter() + attackInfo.attack.ultPercent);
 
 					// Apply an impulse to the target's body in the calculated direction
 					float impulseMagnitude = (target.getHealth() / 100 / target.getWeight()) * (attackInfo.attack.m_force);
@@ -75,7 +76,6 @@ public class MyGdxGame extends ApplicationAdapter {
 					}
 
 					target.getBody().applyLinearImpulse(impulse, target.getBody().getWorldCenter(), true);
-
 					attackInfo.attack.dispose();
 				}
 			}

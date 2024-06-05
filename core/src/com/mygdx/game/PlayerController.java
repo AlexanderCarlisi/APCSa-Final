@@ -168,6 +168,10 @@ public class PlayerController {
         // Don't Attack, if still in EndLag.
         if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) return;
 
+        // Ultimate Check
+        if (attackType == Attack.attackType.Ultimate && m_fighter.getUltMeter() < 100) return;
+        else if (attackType == Attack.attackType.Ultimate) m_fighter.setUltMeter(0);
+
         boolean left;
         boolean right;
         boolean up;

@@ -20,6 +20,7 @@ public class Fighter {
         public final Vector2 offset;
         public final boolean isSideDependent;
         public final float damage;
+        public final float ultPercent;
         public final float force;
         public final Vector2 size;
         public final Vector2 impulse;
@@ -31,10 +32,11 @@ public class Fighter {
         public final long lifeTime;
         public final float endLag;
 
-        public AttackConfig(Attack.attackType attackType, Attack.direction direction, float damage, float force, Vector2 offset, Vector2 size, boolean isSideDependent, boolean isGroundAttack, float endLag) {
+        public AttackConfig(Attack.attackType attackType, Attack.direction direction, float damage, float ultPercent, float force, Vector2 offset, Vector2 size, boolean isSideDependent, boolean isGroundAttack, float endLag) {
             this.attackType = attackType;
             this.direction = direction;
             this.damage = damage;
+            this.ultPercent = ultPercent;
             this.force = force;
             this.offset = offset;
             this.size = size;
@@ -47,11 +49,12 @@ public class Fighter {
             this.lifeTime = 0;
         }
 
-        public AttackConfig(Attack.attackType attackType, Attack.direction direction, float damage, float force, long lifeTime, Vector2 offset, Vector2 size, Vector2 impulse, boolean isGroundAttack, boolean bringFighter, float endLag) {
+        public AttackConfig(Attack.attackType attackType, Attack.direction direction, float damage, float ultPercent, float force, long lifeTime, Vector2 offset, Vector2 size, Vector2 impulse, boolean isGroundAttack, boolean bringFighter, float endLag) {
             this.isProjectile = true;
             this.attackType = attackType;
             this.direction = direction;
             this.damage = damage;
+            this.ultPercent = ultPercent;
             this.force = force;
             this.lifeTime = lifeTime;
             this.offset = offset;
@@ -99,6 +102,9 @@ public class Fighter {
     /** Current health in Percent. */
     private float m_health;
 
+    /** Current Value of the Ultimate Meter. */
+    private float m_ultMeter;
+
     /** If the Fighter is still in the Battle. */
     public boolean isDead;
     
@@ -137,6 +143,14 @@ public class Fighter {
 
     public void setHealth(float health) {
         m_health = health;
+    }
+
+    public float getUltMeter() {
+        return m_ultMeter;
+    }
+
+    public void setUltMeter(float value) {
+        m_ultMeter = value;
     }
 
     public float getJumpForce() {
@@ -185,7 +199,7 @@ public class Fighter {
                 if (!config.isProjectile)
                     new Attack(
                             this,
-                            config.damage, config.force,
+                            config.damage, config.ultPercent, config.force,
                             config.isSideDependent ?
                                     facingRight ?
                                             new Vector2(pos.x + config.offset.x, pos.y + config.offset.y) :
@@ -197,7 +211,7 @@ public class Fighter {
                 else
                     new Attack(
                             this,
-                            config.damage, config.force, config.lifeTime, config.bringFighter,
+                            config.damage, config.ultPercent, config.force, config.lifeTime, config.bringFighter,
                             facingRight ?
                                     new Vector2(pos.x + config.offset.x, pos.y + config.offset.y) :
                                     new Vector2(pos.x - config.offset.x, pos.y + config.offset.y),
