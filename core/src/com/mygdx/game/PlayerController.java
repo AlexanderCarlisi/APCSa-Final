@@ -3,16 +3,13 @@ package com.mygdx.game;
 import java.util.function.BooleanSupplier;
 
 import com.badlogic.gdx.ai.steer.behaviors.Jump;
+import com.badlogic.gdx.physics.box2d.*;
 import org.libsdl.SDL;
 import org.libsdl.SDL_Error;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.RayCastCallback;
 
 import uk.co.electronstudio.sdl2gdx.SDL2Controller;
 import uk.co.electronstudio.sdl2gdx.SDL2ControllerManager;
@@ -45,18 +42,6 @@ public class PlayerController {
     private static final float MAX_VELOCITY_AIRBORNE = 0.4f; // Should become character specific
     private static final long JUMP_DEBOUNCE = 125; // milliseconds
     private static final float AXIS_DEADZONE = 0.2f;
-    
-    private final RayCastCallback m_callback = new RayCastCallback() {
-        @Override
-        public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-            // if the fixture is the ground, apply a jump impulse
-            if (fixture.getUserData() == "ground") {
-                m_isGrounded = true;
-                return 0;
-            }
-            return -1;   
-        }
-    };
 
     private final Fighter m_fighter;
 
@@ -84,7 +69,7 @@ public class PlayerController {
      */
     public PlayerController(Fighter fighter, ControllerType controllerType) {
         m_fighter = fighter;
-        m_isGrounded = false;
+        m_isGrounded = true;
         m_hasDoubleJump = false;
         m_isFacingRight = false;
         m_previousY = 0;
@@ -168,6 +153,7 @@ public class PlayerController {
         if (m_isGrounded && System.currentTimeMillis() - m_lastJump > JUMP_DEBOUNCE) {
             body.applyLinearImpulse(0, m_fighter.getJumpForce(), pos.x, pos.y, true);
             m_lastJump = System.currentTimeMillis();
+            m_isGrounded = false;
         }
         else if (!m_isGrounded && m_hasDoubleJump && System.currentTimeMillis() - m_lastJump > JUMP_DEBOUNCE) {
             // body.applyLinearImpulse(0, m_fighter.getJumpForce() * (m_isFalling ? 3f : 1.35f), pos.x, pos.y, true);
@@ -225,16 +211,9 @@ public class PlayerController {
         Body body = m_fighter.getBody();
         Vector2 pos = body.getPosition();
 
-        // raytrace to check if the fighter is on the ground
-        m_isGrounded = false;
-        Vector2 from = new Vector2(pos.x, pos.y);
-        Vector2 to = new Vector2(pos.x, pos.y - m_fighter.getDimensions().y / 2 - 0.3f);
-        MyGdxGame.WORLD.rayCast(m_callback, from, to);
-
         m_deltaTime = System.currentTimeMillis() - m_previousTime;
         m_fallSpeed = (pos.y - m_previousY) * m_deltaTime;
         if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) return;
-        System.out.println(m_fallSpeed);
 
         // Bindings
         for (ControlAction action : m_bindings) {
@@ -252,5 +231,9 @@ public class PlayerController {
 
     public Fighter getFighter() {
         return m_fighter;
+    }
+
+    public void setGrounded() {
+        m_isGrounded = true;
     }
 }

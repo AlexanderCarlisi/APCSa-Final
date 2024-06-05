@@ -50,6 +50,7 @@ public class Battle {
         Vector2[] startingPositions = m_arena.getStartingPositions();
         for (int i = 0; i < m_fighters.length; i++) {
             m_controllers[i] = new PlayerController(m_fighters[i], controllers[i]);
+            m_fighters[i].setController(m_controllers[i]);
             m_fighters[i].getBody().setTransform(startingPositions[i], 0);
             m_stocks[i] = m_config.stocks;
         }

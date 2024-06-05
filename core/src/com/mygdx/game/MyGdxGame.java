@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.PlayerController.ControllerType;
@@ -20,11 +17,91 @@ import com.mygdx.game.PlayerController.ControllerType;
  */
 public class MyGdxGame extends ApplicationAdapter {
 
+	public static class WorldContactListener implements ContactListener {
+		@Override
+		public void beginContact(Contact contact) {
+			// Fixture A is the Fighter
+			// Fixture B is the Ground
+			if (contact.getFixtureB().getUserData() instanceof MyGdxGame.entityCategory && contact.getFixtureA().getUserData() instanceof Fighter) {
+				MyGdxGame.entityCategory ground = (MyGdxGame.entityCategory) contact.getFixtureB().getUserData();
+				Fighter fighter = (Fighter) contact.getFixtureA().getUserData();
+				if (ground == MyGdxGame.entityCategory.Ground) {
+					fighter.getController().setGrounded();
+				}
+			}
+
+			// Fixture A is Fighter contacted with
+			// Fixture B is AttackInfo
+			if (contact.getFixtureA().getUserData() instanceof Fighter && contact.getFixtureB().getUserData() instanceof Attack.AttackInfo) {
+				Attack.AttackInfo attackInfo = (Attack.AttackInfo) contact.getFixtureB().getUserData();
+				Fighter target = (Fighter) contact.getFixtureA().getUserData();
+
+				if (attackInfo.user != target) {
+					target.setHealth(target.getHealth() + attackInfo.attack.m_damage);
+
+					// Apply an impulse to the target's body in the calculated direction
+					float impulseMagnitude = (target.getHealth() / 100 / target.getWeight()) * (attackInfo.attack.m_force);
+					Vector2 impulse = new Vector2(impulseMagnitude, impulseMagnitude);
+
+					switch(attackInfo.attack.dir) {
+						case Neutral:
+
+						case Side: {
+							if (attackInfo.attack.isFacingRight) {
+								impulse.set(impulse.x, impulse.y / 2);
+							} else {
+								impulse.set(-impulse.x, impulse.y / 2);
+							}
+							break;
+						}
+
+						case Up: {
+							if (attackInfo.attack.isFacingRight) {
+								impulse.set(impulse.x / 4, impulse.y * 1.5f);
+							} else {
+								impulse.set(-impulse.x / 4, impulse.y * 1.5f);
+							}
+							break;
+						}
+
+						case Down: {
+							if (attackInfo.attack.isFacingRight) {
+								impulse.set(impulse.x / 4, -impulse.y * 1.5f);
+							} else {
+								impulse.set(-impulse.x / 4, -impulse.y * 1.5f);
+							}
+							break;
+						}
+					}
+
+					target.getBody().applyLinearImpulse(impulse, target.getBody().getWorldCenter(), true);
+
+					attackInfo.attack.dispose();
+				}
+			}
+		}
+
+		@Override
+		public void endContact(Contact contact) {}
+
+		@Override
+		public void preSolve(Contact contact, Manifold oldManifold) {
+			// Have Collision Detection, but no Physical Collisions for Attacks
+			if (contact.getFixtureB().getUserData() instanceof Attack.AttackInfo) {
+				contact.setEnabled(false);
+			}
+		}
+
+		@Override
+		public void postSolve(Contact contact, ContactImpulse impulse) {}
+	}
+
 	public enum entityCategory {
 		Default((short) 0),
 		Ground((short) 1),
 		Fighter((short) 2),
-		Attack((short) 3);
+		Attack((short) 3),
+		Destroy((short) 4);
 
 		private final short id;
 		private entityCategory(short id) {
@@ -72,7 +149,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Controller};
 		
 		m_battle = new Battle(fighters, controllers, new BattleConfig());
-		WORLD.setContactListener(new Attack.AttackCollisionListener());
+		WORLD.setContactListener(new WorldContactListener());
 	}
 
 
@@ -89,7 +166,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		WORLD.getBodies(bodies);
 		for (Body body : bodies) {
 			for (Fixture fixture : body.getFixtureList()) {
-				if (fixture.getUserData() instanceof String && fixture.getUserData().equals("MARKED FOR DELETION")) {
+				if (fixture.getUserData() instanceof entityCategory && fixture.getUserData().equals(entityCategory.Destroy)) {
 					WORLD.destroyBody(body);
 				}
 				else if (fixture.getUserData() instanceof Attack.AttackInfo) {

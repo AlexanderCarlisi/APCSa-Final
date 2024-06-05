@@ -94,6 +94,8 @@ public class Fighter {
     /** Final Array of all Attacks/Specials of the Fighter. */
     private final AttackConfig[] m_attackConfigs;
 
+    private PlayerController m_controller;
+
     /** Current health in Percent. */
     private float m_health;
 
@@ -159,6 +161,14 @@ public class Fighter {
 
     public Vector2 getDimensions() {
         return new Vector2(m_width, m_height);
+    }
+
+    public void setController(PlayerController controller) {
+        m_controller = controller;
+    }
+
+    public PlayerController getController() {
+        return m_controller;
     }
 
     /**

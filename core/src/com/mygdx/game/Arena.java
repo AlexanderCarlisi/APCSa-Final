@@ -55,7 +55,7 @@ public class Arena {
      * Constructor for the Arena Class.
      */
     public Arena(int numOfFighters) {
-        m_groundFixture.setUserData("ground");
+        m_groundFixture.setUserData(MyGdxGame.entityCategory.Ground);
         m_startingPositions = new Vector2[] {
             new Vector2(GDXHelper.PTM(10), GDXHelper.PTM(10)), new Vector2(GDXHelper.PTM(7), GDXHelper.PTM(10))
         };
