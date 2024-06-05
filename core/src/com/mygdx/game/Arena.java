@@ -63,14 +63,14 @@ public class Arena {
         m_healthLabels = new Label[numOfFighters];
         m_stockLabels = new Label[numOfFighters];
         float labelPosX = 100;
-        float labelPosY = 40;
+        float labelPosY = 60;
         for (int i = 0; i < numOfFighters; i++) {
             m_healthLabels[i] = new Label("0%", FONT);
             m_stage.addActor(m_healthLabels[i]);
             m_healthLabels[i].setPosition(labelPosX, labelPosY);
             m_stockLabels[i] = new Label("0", FONT);
             m_stage.addActor(m_stockLabels[i]);
-            m_stockLabels[i].setPosition(labelPosX, labelPosY - 20);
+            m_stockLabels[i].setPosition(labelPosX, labelPosY - 25);
             labelPosX += 100;
         }
 
@@ -111,7 +111,7 @@ public class Arena {
     
     public void update(Fighter[] fighters, int[] stocks, float timeLimit) {
         for (int i = 0; i < fighters.length; i++) {
-            m_healthLabels[i].setText(fighters[i].getName() + ": " + String.format("%.1f",fighters[i].getHealth()) + "%" + "\nUlt: " + String.format("%.1f", fighters[i].getUltMeter()));
+            m_healthLabels[i].setText(fighters[i].getName() + ": " + String.format("%.1f",fighters[i].getHealth()) + "%" + "\nUlt: " + String.format("%.1f", fighters[i].getUltMeter()) + "%");
             m_stockLabels[i].setText((stocks[i] == -1) ? "inf" : Integer.toString(stocks[i]));
         }
 
