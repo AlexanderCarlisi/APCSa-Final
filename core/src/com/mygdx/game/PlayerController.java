@@ -45,6 +45,7 @@ public class PlayerController {
     private static final long GUARDBREAK_STUNTIME = 125;
     private static final float GUARD_DEGRADE = 0.25f;
     private static final float GUARD_GENERATE = 0.25f;
+    private static final long GUARD_DEBOUNCE = 1000;
 
     private final Fighter m_fighter;
 
@@ -64,9 +65,9 @@ public class PlayerController {
 
     private float m_endLag;
     private long m_previousAttackTime;
-    // private long m_initalGuardTime;
     private float m_fallSpeed;
     private float m_guardPercent;
+    private long m_previousGuardTime;
 
     /**
      * Constructor for the Controller Class.
@@ -178,11 +179,16 @@ public class PlayerController {
 
 
     private void guard() {
-        if (m_guardPercent > 0)
+        if (m_guardPercent > 0 && System.currentTimeMillis() > m_previousGuardTime + GUARD_DEBOUNCE) {
             m_isGuarding = true;
+        }
     }
     private void stopGuard() {
+        // Prevent Spam
+        if (System.currentTimeMillis() < m_previousGuardTime + GUARD_DEBOUNCE) return;
+
         m_isGuarding = false;
+        m_previousGuardTime = System.currentTimeMillis();
     }
 
 
