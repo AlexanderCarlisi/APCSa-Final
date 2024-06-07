@@ -10,7 +10,6 @@ import com.mygdx.game.PlayerController.ControllerType;
 
 /**
  * The Battle Class
- * 
  * This class is initialized once the Fighters are selected and the players start the game.
  * <p>
  * Handles the physics, controls, and logic of the game.
@@ -42,12 +41,15 @@ public class Battle {
      * @param controllers
      */
     public Battle(Fighter[] fighters, ControllerType[] controllers, BattleConfig config) {
+        // Setup Battle
         m_config = config;
         m_arena = new Arena(fighters.length); // Will eventually be set with an index to determine the Arena.
         m_fighters = fighters;
         m_controllers = new PlayerController[m_fighters.length];
         m_stocks = new int[m_fighters.length];
         Vector2[] startingPositions = m_arena.getStartingPositions();
+
+        // Setup Fighters
         for (int i = 0; i < m_fighters.length; i++) {
             m_controllers[i] = new PlayerController(m_fighters[i], controllers[i]);
             m_fighters[i].setController(m_controllers[i]);

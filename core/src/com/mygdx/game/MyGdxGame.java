@@ -98,6 +98,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		public void postSolve(Contact contact, ContactImpulse impulse) {}
 	}
 
+
+	/**
+	 * Entity Categories, for MaskBits and Identification of Fixtures.
+	 */
 	public enum entityCategory {
 		Default((short) 0),
 		Ground((short) 1),
@@ -115,6 +119,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 	}
 
+	// Constants
 	private static final float TIME_STEP = 1/60f;
     private static final int VELOCITY_ITERATIONS = 6;
     private static final int POSITION_ITERATIONS = 2;
@@ -183,20 +188,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		CAMERA.update();
 		if (!m_battle.isFinished) m_battle.update();
 
-		// Draw Characters
-		m_debugRenderer.render(WORLD, CAMERA.combined);
-		m_spriteBatch.setProjectionMatrix(CAMERA.combined);
-		m_shapeRenderer.setProjectionMatrix(CAMERA.combined);
+		m_debugRenderer.render(WORLD, CAMERA.combined); // See Collision Boxes
+		m_spriteBatch.setProjectionMatrix(CAMERA.combined); // Matrix for Sprites
+		m_shapeRenderer.setProjectionMatrix(CAMERA.combined); // Matrix for GDXShapes
 
+		// Draw Battle
 		if (!m_battle.isFinished) m_battle.draw(m_spriteBatch, m_shapeRenderer);
-
-		// Draw Background
-
-
-		// Draw UI
-
-
-		// m_frameCount++;
 	}
 
 	
