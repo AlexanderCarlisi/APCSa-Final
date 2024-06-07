@@ -26,7 +26,7 @@ public class MyGdxGame extends ApplicationAdapter {
 				MyGdxGame.entityCategory ground = (MyGdxGame.entityCategory) contact.getFixtureB().getUserData();
 				Fighter fighter = (Fighter) contact.getFixtureA().getUserData();
 				if (ground == MyGdxGame.entityCategory.Ground) {
-					fighter.getController().setGrounded();
+					fighter.getController().setGrounded(true);
 				}
 			}
 
@@ -84,7 +84,17 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 
 		@Override
-		public void endContact(Contact contact) {}
+		public void endContact(Contact contact) {
+			// Fixture A is the Fighter
+			// Fixture B is the Ground
+			if (contact.getFixtureB().getUserData() instanceof MyGdxGame.entityCategory && contact.getFixtureA().getUserData() instanceof Fighter) {
+				MyGdxGame.entityCategory ground = (MyGdxGame.entityCategory) contact.getFixtureB().getUserData();
+				Fighter fighter = (Fighter) contact.getFixtureA().getUserData();
+				if (ground == MyGdxGame.entityCategory.Ground) {
+					fighter.getController().setGrounded(false);
+				}
+			}
+		}
 
 		@Override
 		public void preSolve(Contact contact, Manifold oldManifold) {

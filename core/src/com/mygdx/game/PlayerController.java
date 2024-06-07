@@ -279,8 +279,8 @@ public class PlayerController {
         return m_fighter;
     }
 
-    public void setGrounded() {
-        m_isGrounded = true;
+    public void setGrounded(boolean value) {
+        m_isGrounded = value;
     }
 
     public boolean isGuarding() {
