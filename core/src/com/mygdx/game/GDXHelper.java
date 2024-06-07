@@ -115,6 +115,6 @@ public class GDXHelper {
      * @param radius
      */
     public static void drawCircle(ShapeRenderer shapeRenderer, float posX, float posY, float radius) {
-        shapeRenderer.circle(posX - radius, posY - radius, radius * 2);
+        shapeRenderer.circle(posX - radius, posY - radius, radius * 2, 50);
     }
 }
