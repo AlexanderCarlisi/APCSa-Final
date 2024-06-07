@@ -1,8 +1,18 @@
 package com.mygdx.game;
 
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class CharacterSelect {
 
@@ -21,211 +31,63 @@ public class CharacterSelect {
         m_fighters = new Fighter[2];
         m_selectionIndexs = new int[m_players];
 
+        // Setup Json Config for Fighter Data
+        Json json = new Json();
+        json.setUsePrototypes(false);
+        json.setOutputType(JsonWriter.OutputType.json);
+        json.setElementType(Fighter.FighterConfig.class, "attackConfigs", Fighter.AttackConfig.class);
+
         // Add a Listener to a Fighter Button
         // When that Button is clicked, add the Fighter's data to m_fighters
 
+        // Tests Hardcoded selection of Fighters for now.
         m_selectionIndexs[0] = 0;
         m_selectionIndexs[1] = 1;
 
         for (int i = 0; i < m_players; i++) {
-            String name = "None";
-            float runSpeed = 0;
-            float jumpForce = 0;
-            float weight = 0;
-            FixtureDef fixtureDef = null;
-            float width = 0;
-            float height = 0;
-            Fighter.AttackConfig[] attackConfigs = null;
-
-            switch(m_selectionIndexs[i]) {
-                case 0: {
-                    name = "Test1";
-                    runSpeed = 0.01f;
-                    jumpForce = 0.05f;
-                    weight = 1f;
-                    width = GDXHelper.PTM(15f);
-                    height = GDXHelper.PTM(25f);
-                    fixtureDef = GDXHelper.generateFixtureDef(1f, 4f, 0f, width, height,
-                            MyGdxGame.entityCategory.Fighter.getID(), MyGdxGame.entityCategory.Ground.getID());
-                    attackConfigs = new Fighter.AttackConfig[] {
-                            // Ground Basic
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Neutral, 1.5f, 1f, 0.3f,
-                                    new Vector2(0.2f, 0),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    true, true, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Side, 3, 1f, 0.4f,
-                                    new Vector2(0.5f, 0),
-                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    true, true, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Up, 3, 1f, 0.4f,
-                                    new Vector2(0, 0.4f),
-                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    false, true, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Down, 3, 1f, 0.4f,
-                                    new Vector2(0.4f, -0.35f),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    true, true, 250f),
-
-                            // Air Basic
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Neutral, 1.5f, 1f, 0.3f,
-                                    new Vector2(0.2f, 0),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    true, false, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Side, 3, 1f, 0.4f,
-                                    new Vector2(0.5f, 0),
-                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    true, false, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Up, 3, 1f, 0.43f,
-                                    new Vector2(0, 0.4f),
-                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    false, false, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Down, 3, 1f, 0.6f,
-                                    new Vector2(0.4f, -0.35f),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, false, 250f),
-
-                            // Specials
-                            new Fighter.AttackConfig(Attack.attackType.Special, Attack.direction.Neutral, 1.5f, 2f, 0.3f, 5000,
-                                    new Vector2(0.2f, 0),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    new Vector2(0.5f, 0f),
-                                    false, false, 350f),
-                            new Fighter.AttackConfig(Attack.attackType.Special, Attack.direction.Side, 3, 2f, 0.4f,
-                                    new Vector2(0.5f, 0),
-                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    true, false, 400f),
-                            new Fighter.AttackConfig(Attack.attackType.Special, Attack.direction.Up, 3, 2f, 0.6f, 100,
-                                    new Vector2(0, 0.4f),
-                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    new Vector2(0f, 0.1f),
-                                    false, true, 400f),
-                            new Fighter.AttackConfig(Attack.attackType.Special, Attack.direction.Down, 3, 2f, 0.6f,
-                                    new Vector2(0.4f, -0.35f),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, false, 400f),
-
-                            // Smashes
-                            new Fighter.AttackConfig(Attack.attackType.Smash, Attack.direction.Side, 10f, 2f, 0.5f,
-                                    new Vector2(0.6f, 0f),
-                                    new Vector2(GDXHelper.PTM(30f), GDXHelper.PTM(30f)),
-                                    true, true, 800f),
-                            new Fighter.AttackConfig(Attack.attackType.Smash, Attack.direction.Up, 10f, 2f, 0.8f,
-                                    new Vector2(0f, 0.6f),
-                                    new Vector2(GDXHelper.PTM(35), GDXHelper.PTM(30)),
-                                    false, true, 800f),
-                            new Fighter.AttackConfig(Attack.attackType.Smash, Attack.direction.Down, 10f, 2f, 0.8f,
-                                    new Vector2(0f, -0.6f),
-                                    new Vector2(GDXHelper.PTM(35), GDXHelper.PTM(30)),
-                                    false, true, 800f),
-
-                            // Ultimate
-                            new Fighter.AttackConfig(Attack.attackType.Ultimate, Attack.direction.Neutral, 50f, 2f, 1f,
-                                    new Vector2(0, 0),
-                                    new Vector2(30f, 30f),
-                                    false, true, 5100f)
-                    };
-                    break;
-                }
-
-                case 1: {
-                    name = "Test2";
-                    runSpeed = 0.075f;
-                    jumpForce = 0.5f;
-                    weight = 3.5f;
-                    width = GDXHelper.PTM(20f);
-                    height = GDXHelper.PTM(35f);
-                    fixtureDef = GDXHelper.generateFixtureDef(1f, 4f, 0f, width, height,
-                            MyGdxGame.entityCategory.Fighter.getID(), MyGdxGame.entityCategory.Ground.getID());
-                    attackConfigs = new Fighter.AttackConfig[]{
-                            // Ground Basic
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Neutral, 1.5f, 1f, 0.3f,
-                                    new Vector2(0.2f, 0),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    true, true, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Side, 3, 1f, 0.4f,
-                                    new Vector2(0.5f, 0),
-                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    true, true, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Up, 3, 1f, 0.4f,
-                                    new Vector2(0, 0.4f),
-                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    false, true, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Down, 3, 1f, 0.4f,
-                                    new Vector2(0.4f, -0.35f),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    true, true, 250f),
-
-                            // Air Basic
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Neutral, 1.5f, 1f, 0.3f,
-                                    new Vector2(0.2f, 0),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    true, false, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Side, 3, 1f, 0.4f,
-                                    new Vector2(0.5f, 0),
-                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    true, false, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Up, 3, 1f, 0.43f,
-                                    new Vector2(0, 0.4f),
-                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    false, false, 250f),
-                            new Fighter.AttackConfig(Attack.attackType.Basic, Attack.direction.Down, 3, 1f, 0.6f,
-                                    new Vector2(0.4f, -0.35f),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, false, 250f),
-
-                            // Specials
-                            new Fighter.AttackConfig(Attack.attackType.Special, Attack.direction.Neutral, 1.5f, 2f, 0.3f, 5000,
-                                    new Vector2(0.2f, 0),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    new Vector2(0.5f, 0f),
-                                    false, false, 350f),
-                            new Fighter.AttackConfig(Attack.attackType.Special, Attack.direction.Side, 3, 2f, 0.4f,
-                                    new Vector2(0.5f, 0),
-                                    new Vector2(GDXHelper.PTM(25), GDXHelper.PTM(10)),
-                                    true, false, 400f),
-                            new Fighter.AttackConfig(Attack.attackType.Special, Attack.direction.Up, 3, 2f, 0.6f, 100,
-                                    new Vector2(0, 0.4f),
-                                    new Vector2(GDXHelper.PTM(30), GDXHelper.PTM(10)),
-                                    new Vector2(0f, 0.1f),
-                                    false, true, 400f),
-                            new Fighter.AttackConfig(Attack.attackType.Special, Attack.direction.Down, 3, 2f, 0.6f,
-                                    new Vector2(0.4f, -0.35f),
-                                    new Vector2(GDXHelper.PTM(20), GDXHelper.PTM(15)),
-                                    false, false, 400f),
-
-                            // Smashes
-                            new Fighter.AttackConfig(Attack.attackType.Smash, Attack.direction.Side, 10f, 2f, 0.5f,
-                                    new Vector2(0.6f, 0f),
-                                    new Vector2(GDXHelper.PTM(30f), GDXHelper.PTM(30f)),
-                                    true, true, 800f),
-                            new Fighter.AttackConfig(Attack.attackType.Smash, Attack.direction.Up, 10f, 2f, 0.8f,
-                                    new Vector2(0f, 0.6f),
-                                    new Vector2(GDXHelper.PTM(35), GDXHelper.PTM(30)),
-                                    false, true, 800f),
-                            new Fighter.AttackConfig(Attack.attackType.Smash, Attack.direction.Down, 10f, 2f, 0.8f,
-                                    new Vector2(0f, -0.6f),
-                                    new Vector2(GDXHelper.PTM(35), GDXHelper.PTM(30)),
-                                    false, true, 800f),
-
-                            // Ultimate
-                            new Fighter.AttackConfig(Attack.attackType.Ultimate, Attack.direction.Neutral, 50f, 2f, 1f,
-                                    new Vector2(0, 0),
-                                    new Vector2(30f, 30f),
-                                    false, true, 5100f)
-                    };
-                    break;
-                }
-            }
-
-            m_fighters[i] = new Fighter(name, runSpeed, jumpForce, weight, fixtureDef, width, height, attackConfigs);
+            m_fighters[i] = getFighter(json, m_selectionIndexs[i]);
         }
+
+        // CODE TO CONVERT a Fighter made in Code into a JSON.
+//
+//                try {
+//                    FileWriter writer = new FileWriter(Gdx.files.internal("Fighters/Fighter1.json").file());
+//                    writer.write(json.toJson(new Fighter.FighterConfig(name, runSpeed, jumpForce, weight, width, height, attackConfigs)));
+//                    writer.close();
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                System.exit(0);
     }
 
 
+    /**
+     * Parses Fighters Folder for JSON
+     *
+     * @param json configuration Json object
+     * @param i Fighter index number
+     * @return Fighter Class created from JSON data
+     */
+    private Fighter getFighter(Json json, int i) {
+        // Get Fighter Data
+        FileHandle fh = Gdx.files.internal("Fighters/Fighter"+i+".json");
+        Fighter.FighterConfig config = json.fromJson(Fighter.FighterConfig.class, fh);
+        return new Fighter(config);
+    }
+
+
+    /**
+     * If all players have selected a Fighter.
+     * Once all Fighters have been Selected this Method will return their Chosen fighters
+     * in order of their Player index.
+     *
+     * @return null if not finished, and Fighter[] once done.
+     */
     public Fighter[] isFinished() {
         for (Fighter fighter : m_fighters)
             if (fighter == null) return null;
         return m_fighters;
     }
-
 }

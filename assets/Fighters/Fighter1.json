@@ -1,0 +1,368 @@
+{
+  "name": "Test2",
+  "jumpForce": 0.5,
+  "runSpeed": 0.075,
+  "weight": 3.5,
+  "width": 0.2,
+  "height": 0.35,
+  "attackConfigs": [
+    {
+      "offset": {
+        "x": 0.2,
+        "y": 0
+      },
+      "isSideDependent": true,
+      "damage": 1.5,
+      "ultPercent": 1,
+      "force": 0.3,
+      "size": {
+        "x": 0.2,
+        "y": 0.15
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Neutral",
+      "isGroundAttack": true,
+      "attackType": "Basic",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 250
+    },
+    {
+      "offset": {
+        "x": 0.5,
+        "y": 0
+      },
+      "isSideDependent": true,
+      "damage": 3,
+      "ultPercent": 1,
+      "force": 0.4,
+      "size": {
+        "x": 0.25,
+        "y": 0.1
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Side",
+      "isGroundAttack": true,
+      "attackType": "Basic",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 250
+    },
+    {
+      "offset": {
+        "x": 0,
+        "y": 0.4
+      },
+      "isSideDependent": false,
+      "damage": 3,
+      "ultPercent": 1,
+      "force": 0.4,
+      "size": {
+        "x": 0.3,
+        "y": 0.1
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Up",
+      "isGroundAttack": true,
+      "attackType": "Basic",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 250
+    },
+    {
+      "offset": {
+        "x": 0.4,
+        "y": -0.35
+      },
+      "isSideDependent": true,
+      "damage": 3,
+      "ultPercent": 1,
+      "force": 0.4,
+      "size": {
+        "x": 0.2,
+        "y": 0.15
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Down",
+      "isGroundAttack": true,
+      "attackType": "Basic",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 250
+    },
+    {
+      "offset": {
+        "x": 0.2,
+        "y": 0
+      },
+      "isSideDependent": true,
+      "damage": 1.5,
+      "ultPercent": 1,
+      "force": 0.3,
+      "size": {
+        "x": 0.2,
+        "y": 0.15
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Neutral",
+      "isGroundAttack": false,
+      "attackType": "Basic",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 250
+    },
+    {
+      "offset": {
+        "x": 0.5,
+        "y": 0
+      },
+      "isSideDependent": true,
+      "damage": 3,
+      "ultPercent": 1,
+      "force": 0.4,
+      "size": {
+        "x": 0.25,
+        "y": 0.1
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Side",
+      "isGroundAttack": false,
+      "attackType": "Basic",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 250
+    },
+    {
+      "offset": {
+        "x": 0,
+        "y": 0.4
+      },
+      "isSideDependent": false,
+      "damage": 3,
+      "ultPercent": 1,
+      "force": 0.43,
+      "size": {
+        "x": 0.3,
+        "y": 0.1
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Up",
+      "isGroundAttack": false,
+      "attackType": "Basic",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 250
+    },
+    {
+      "offset": {
+        "x": 0.4,
+        "y": -0.35
+      },
+      "isSideDependent": false,
+      "damage": 3,
+      "ultPercent": 1,
+      "force": 0.6,
+      "size": {
+        "x": 0.2,
+        "y": 0.15
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Down",
+      "isGroundAttack": false,
+      "attackType": "Basic",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 250
+    },
+    {
+      "offset": {
+        "x": 0.2,
+        "y": 0
+      },
+      "isSideDependent": false,
+      "damage": 1.5,
+      "ultPercent": 2,
+      "force": 0.3,
+      "size": {
+        "x": 0.2,
+        "y": 0.15
+      },
+      "impulse": {
+        "x": 0.5,
+        "y": 0
+      },
+      "isProjectile": true,
+      "direction": "Neutral",
+      "isGroundAttack": false,
+      "attackType": "Special",
+      "bringFighter": false,
+      "lifeTime": 5000,
+      "endLag": 350
+    },
+    {
+      "offset": {
+        "x": 0.5,
+        "y": 0
+      },
+      "isSideDependent": true,
+      "damage": 3,
+      "ultPercent": 2,
+      "force": 0.4,
+      "size": {
+        "x": 0.25,
+        "y": 0.1
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Side",
+      "isGroundAttack": false,
+      "attackType": "Special",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 400
+    },
+    {
+      "offset": {
+        "x": 0,
+        "y": 0.4
+      },
+      "isSideDependent": false,
+      "damage": 3,
+      "ultPercent": 2,
+      "force": 0.6,
+      "size": {
+        "x": 0.3,
+        "y": 0.1
+      },
+      "impulse": {
+        "x": 0,
+        "y": 0.1
+      },
+      "isProjectile": true,
+      "direction": "Up",
+      "isGroundAttack": false,
+      "attackType": "Special",
+      "bringFighter": true,
+      "lifeTime": 100,
+      "endLag": 400
+    },
+    {
+      "offset": {
+        "x": 0.4,
+        "y": -0.35
+      },
+      "isSideDependent": false,
+      "damage": 3,
+      "ultPercent": 2,
+      "force": 0.6,
+      "size": {
+        "x": 0.2,
+        "y": 0.15
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Down",
+      "isGroundAttack": false,
+      "attackType": "Special",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 400
+    },
+    {
+      "offset": {
+        "x": 0.6,
+        "y": 0
+      },
+      "isSideDependent": true,
+      "damage": 10,
+      "ultPercent": 2,
+      "force": 0.5,
+      "size": {
+        "x": 0.3,
+        "y": 0.3
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Side",
+      "isGroundAttack": true,
+      "attackType": "Smash",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 800
+    },
+    {
+      "offset": {
+        "x": 0,
+        "y": 0.6
+      },
+      "isSideDependent": false,
+      "damage": 10,
+      "ultPercent": 2,
+      "force": 0.8,
+      "size": {
+        "x": 0.35,
+        "y": 0.3
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Up",
+      "isGroundAttack": true,
+      "attackType": "Smash",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 800
+    },
+    {
+      "offset": {
+        "x": 0,
+        "y": -0.6
+      },
+      "isSideDependent": false,
+      "damage": 10,
+      "ultPercent": 2,
+      "force": 0.8,
+      "size": {
+        "x": 0.35,
+        "y": 0.3
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Down",
+      "isGroundAttack": true,
+      "attackType": "Smash",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 800
+    },
+    {
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "isSideDependent": false,
+      "damage": 50,
+      "ultPercent": 2,
+      "force": 1,
+      "size": {
+        "x": 30,
+        "y": 30
+      },
+      "impulse": null,
+      "isProjectile": false,
+      "direction": "Neutral",
+      "isGroundAttack": true,
+      "attackType": "Ultimate",
+      "bringFighter": false,
+      "lifeTime": 0,
+      "endLag": 5100
+    }
+  ]
+}

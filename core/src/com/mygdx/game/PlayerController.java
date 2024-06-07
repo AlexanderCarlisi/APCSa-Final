@@ -242,7 +242,6 @@ public class PlayerController {
 
 
     public void update() {
-        System.out.println(m_guardPercent);
         // Guarding Check
         if (m_isGuarding) {
             m_guardPercent -= GUARD_DEGRADE; // Degrade Shield

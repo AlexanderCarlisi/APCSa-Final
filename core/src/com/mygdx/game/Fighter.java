@@ -32,6 +32,25 @@ public class Fighter {
         public final long lifeTime;
         public final float endLag;
 
+
+        public AttackConfig() {
+            this.attackType = null;
+            this.direction = null;
+            this.damage = 0;
+            this.ultPercent = 0;
+            this.force = 0;
+            this.offset = null;
+            this.size = null;
+            this.impulse = null;
+            this.isProjectile = false;
+            this.isSideDependent = false;
+            this.isGroundAttack = false;
+            this.bringFighter = false;
+            this.endLag = 0;
+            this.lifeTime = 0;
+        }
+
+
         public AttackConfig(Attack.attackType attackType, Attack.direction direction, float damage, float ultPercent, float force, Vector2 offset, Vector2 size, boolean isSideDependent, boolean isGroundAttack, float endLag) {
             this.attackType = attackType;
             this.direction = direction;
@@ -64,6 +83,37 @@ public class Fighter {
             this.isGroundAttack = isGroundAttack;
             this.bringFighter = bringFighter;
             this.endLag = endLag;
+        }
+    }
+
+
+    public static class FighterConfig {
+        public final String name;
+        public final float jumpForce;
+        public final float runSpeed;
+        public final float weight;
+        public final float width;
+        public final float height;
+        public final AttackConfig[] attackConfigs;
+
+        public FighterConfig() {
+            this.name = null;
+            this.jumpForce = 0;
+            this.weight = 0;
+            this.runSpeed = 0;
+            this.width = 0;
+            this.height = 0;
+            this.attackConfigs = null;
+        }
+
+        public FighterConfig(String name, float runSpeed, float jumpForce, float weight, float width, float height, AttackConfig[] attackConfigs) {
+            this.name = name;
+            this.jumpForce = jumpForce;
+            this.weight = weight;
+            this.runSpeed = runSpeed;
+            this.width = width;
+            this.height = height;
+            this.attackConfigs = attackConfigs;
         }
     }
 
@@ -115,9 +165,8 @@ public class Fighter {
      * @param runSpeed
      * @param jumpForce
      * @param weight
-     * @param fixtureDef
      */
-    public Fighter(String name, float runSpeed, float jumpForce, float weight, FixtureDef fixtureDef, float width, float height, AttackConfig[] attackConfigs) {
+    public Fighter(String name, float runSpeed, float jumpForce, float weight, float width, float height, AttackConfig[] attackConfigs) {
         m_name = name;
         m_jumpForce = jumpForce;
         m_weight = weight;
@@ -126,9 +175,27 @@ public class Fighter {
         m_width = width;
         isDead = false;
         m_body = MyGdxGame.WORLD.createBody(BODY_DEF);
-        m_fixture = m_body.createFixture(fixtureDef);
+        m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(1f, 4f, 0f, width, height,
+                MyGdxGame.entityCategory.Fighter.getID(), MyGdxGame.entityCategory.Ground.getID()));
         m_fixture.setUserData(this); // Collider identifier
         m_attackConfigs = attackConfigs;
+
+        m_body.setGravityScale(0.1f);
+    }
+
+    public Fighter(FighterConfig config) {
+        m_name = config.name;
+        m_jumpForce = config.jumpForce;
+        m_weight = config.weight;
+        m_runSpeed = config.runSpeed;
+        m_height = config.height;
+        m_width = config.width;
+        isDead = false;
+        m_body = MyGdxGame.WORLD.createBody(BODY_DEF);
+        m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(1f, 4f, 0f, m_width, m_height,
+                MyGdxGame.entityCategory.Fighter.getID(), MyGdxGame.entityCategory.Ground.getID()));
+        m_fixture.setUserData(this); // Collider identifier
+        m_attackConfigs = config.attackConfigs;
 
         m_body.setGravityScale(0.1f);
     }
