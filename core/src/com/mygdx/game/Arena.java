@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -29,7 +30,7 @@ public class Arena {
     private static final float GROUND_WIDTH = GDXHelper.PTM(500);
     private static final float GROUND_HEIGHT = GDXHelper.PTM(3);
 
-    private static final Skin FONT = new Skin(new FileHandle("C:\\Users\\alexh\\Desktop\\test\\core\\src\\com\\mygdx\\game\\FontSkins\\default\\skin\\uiskin.json"));
+    private static final Skin FONT = new Skin(Gdx.files.internal("FontSkins\\default\\skin\\uiskin.json"));
 
     private final Vector2[] m_startingPositions;
 
