@@ -138,7 +138,7 @@ public class Battle {
                 Vector2 size = fighter.getDimensions();
                 GDXHelper.drawRect(shapeRenderer, pos.x, pos.y, size.x, size.y);
                 if (fighter.getController().isGuarding()) {
-                    GDXHelper.drawCircle(shapeRenderer, pos.x, pos.y, size.y);
+                    GDXHelper.drawCircle(shapeRenderer, pos.x, pos.y, size.y * (fighter.getController().getGuardPercent() / 100));
                 }
             }
         }

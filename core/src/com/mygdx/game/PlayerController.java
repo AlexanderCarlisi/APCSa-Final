@@ -286,4 +286,8 @@ public class PlayerController {
     public boolean isGuarding() {
         return m_isGuarding;
     }
+
+    public float getGuardPercent() {
+        return m_guardPercent;
+    }
 }
