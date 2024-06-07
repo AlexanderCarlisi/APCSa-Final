@@ -3,8 +3,11 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PlayerController.ControllerType;
 
 
@@ -40,19 +43,17 @@ public class Battle {
      * @param fighters 
      * @param controllers
      */
-    public Battle(Fighter[] fighters, ControllerType[] controllers, BattleConfig config) {
+    public Battle(Fighter[] fighters, PlayerController[] controllers, BattleConfig config) {
         // Setup Battle
         m_config = config;
         m_arena = new Arena(fighters.length); // Will eventually be set with an index to determine the Arena.
         m_fighters = fighters;
-        m_controllers = new PlayerController[m_fighters.length];
+        m_controllers = controllers;
         m_stocks = new int[m_fighters.length];
         Vector2[] startingPositions = m_arena.getStartingPositions();
 
         // Setup Fighters
         for (int i = 0; i < m_fighters.length; i++) {
-            m_controllers[i] = new PlayerController(m_fighters[i], controllers[i]);
-            m_fighters[i].setController(m_controllers[i]);
             m_fighters[i].getBody().setTransform(startingPositions[i], 0);
             m_stocks[i] = m_config.stocks;
         }
@@ -118,6 +119,23 @@ public class Battle {
                     // End Battle
                     System.out.println("Battle Ended");
                     isFinished = true;
+                }
+            }
+        }
+
+        // Remove Dead Players, or Attacks.
+        Array<Body> bodies = new Array<>();
+        MyGdxGame.WORLD.getBodies(bodies);
+        for (Body body : bodies) {
+            for (Fixture fixture : body.getFixtureList()) {
+                if (fixture.getUserData() instanceof MyGdxGame.entityCategory && fixture.getUserData().equals(MyGdxGame.entityCategory.Destroy)) {
+                    MyGdxGame.WORLD.destroyBody(body);
+                }
+                else if (fixture.getUserData() instanceof Attack.AttackInfo) {
+                    Attack.AttackInfo info = (Attack.AttackInfo) fixture.getUserData();
+                    if (System.currentTimeMillis() > info.lifeTime) {
+                        MyGdxGame.WORLD.destroyBody(body);
+                    }
                 }
             }
         }

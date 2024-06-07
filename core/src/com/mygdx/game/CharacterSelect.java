@@ -10,15 +10,23 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.ArrayList;
+
 
 public class CharacterSelect {
 
-    private Fighter[] m_fighters;
+    /** Fighter Selection indexes, better than storing Fighters that might get changed in Selector. */
+    private final ArrayList<Integer> m_selectionIndexs;
+
+    /** ControllerTypes selected by the Players */
+    private final ArrayList<PlayerController.ControllerType> m_controllerTypes;
+
+    /** Number of Players, variable they can be added and removed. */
     private int m_players;
-    private int[] m_selectionIndexs;
+
+    /** Button to confirm the Players are ready to start the match. */
+    private boolean m_ready;
+
 
     /**
      * Creating the Object Opens the Screen on the App,
@@ -26,27 +34,18 @@ public class CharacterSelect {
      * method will return the Fighters selected.
      */
     public CharacterSelect() {
-        // Blank for now, to be implemented
         m_players = 2;
-        m_fighters = new Fighter[2];
-        m_selectionIndexs = new int[m_players];
+        m_selectionIndexs = new ArrayList<>();
+        m_controllerTypes = new ArrayList<>();
 
-        // Setup Json Config for Fighter Data
-        Json json = new Json();
-        json.setUsePrototypes(false);
-        json.setOutputType(JsonWriter.OutputType.json);
-        json.setElementType(Fighter.FighterConfig.class, "attackConfigs", Fighter.AttackConfig.class);
+        m_selectionIndexs.add(0, 0);
+        m_controllerTypes.add(0, PlayerController.ControllerType.Keyboard);
+        m_selectionIndexs.add(1, 1);
+        m_controllerTypes.add(1, PlayerController.ControllerType.Controller);
+        m_ready = true;
 
         // Add a Listener to a Fighter Button
         // When that Button is clicked, add the Fighter's data to m_fighters
-
-        // Tests Hardcoded selection of Fighters for now.
-        m_selectionIndexs[0] = 0;
-        m_selectionIndexs[1] = 1;
-
-        for (int i = 0; i < m_players; i++) {
-            m_fighters[i] = getFighter(json, m_selectionIndexs[i]);
-        }
 
         // CODE TO CONVERT a Fighter made in Code into a JSON.
 //
@@ -77,17 +76,51 @@ public class CharacterSelect {
         return new Fighter(config);
     }
 
+    /**
+     * If Character Selection is Over
+     * Conditions : selectedFighters and Controllers are Equal to the Amount of Players, and they clicked the Ready Button.
+     * @return
+     */
+    public boolean isFinished() {
+        return (m_selectionIndexs.size() == m_players && m_controllerTypes.size() == m_players && m_ready);
+    }
+
 
     /**
-     * If all players have selected a Fighter.
-     * Once all Fighters have been Selected this Method will return their Chosen fighters
-     * in order of their Player index.
-     *
-     * @return null if not finished, and Fighter[] once done.
+     * PRECONDITION : isFinished is true.
+     * @return Generated Fighters from Json files.
      */
-    public Fighter[] isFinished() {
-        for (Fighter fighter : m_fighters)
-            if (fighter == null) return null;
-        return m_fighters;
+    public Fighter[] getFighters() {
+        if (!isFinished()) return null;
+
+        // Setup Json Config for Fighter Data
+        Json json = new Json();
+        json.setUsePrototypes(false);
+        json.setOutputType(JsonWriter.OutputType.json);
+        json.setElementType(Fighter.FighterConfig.class, "attackConfigs", Fighter.AttackConfig.class);
+
+        Fighter[] fighters = new Fighter[m_players];
+        for (int i = 0; i < m_players; i++) {
+            fighters[i] = getFighter(json, m_selectionIndexs.get(i));
+        }
+        return fighters;
+    }
+
+
+    /**
+     * PRECONDITION : isFinished is true, and getFighters has been called.
+     * @param fighters Fighter array given by getFighters()
+     * @return
+     */
+    public PlayerController[] getControllers(Fighter[] fighters) {
+        if (!isFinished()) return null;
+
+        PlayerController[] controllers = new PlayerController[m_players];
+        for (int i = 0; i < m_players; i++) {
+            controllers[i] = new PlayerController(fighters[i], m_controllerTypes.get(i));
+            fighters[i].setController(controllers[i]);
+        }
+
+        return controllers;
     }
 }

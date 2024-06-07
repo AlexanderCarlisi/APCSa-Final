@@ -135,6 +135,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	private SpriteBatch m_spriteBatch;
 	private ShapeRenderer m_shapeRenderer;
+
+	private CharacterSelect m_characterSelector;
 	private Battle m_battle;
 	
 
@@ -147,16 +149,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		m_spriteBatch = new SpriteBatch();
 		m_shapeRenderer = new ShapeRenderer();
 		m_shapeRenderer.setAutoShapeType(true);
+		WORLD.setContactListener(new WorldContactListener()); // Collision Listener
 
 		// Should eventually be moved to Render method once properly implemented.
-		// Right now the Fighters are still hard coded in.
-		CharacterSelect charSelect = new CharacterSelect();
-		Fighter[] fighters = charSelect.isFinished();
-
-		ControllerType[] controllers = new ControllerType[] {ControllerType.Keyboard, ControllerType.Controller};
-		
-		m_battle = new Battle(fighters, controllers, new BattleConfig());
-		WORLD.setContactListener(new WorldContactListener());
+		m_characterSelector = new CharacterSelect();
 	}
 
 
@@ -164,36 +160,27 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void render () { // During the Program
 		ScreenUtils.clear(0, 0, 0, 1); // values range from 0-1 instead of 0-255
 
+		// Game state Updates/Checks
+		if (m_battle == null && m_characterSelector != null && m_characterSelector.isFinished()) {
+			Fighter[] fighters = m_characterSelector.getFighters();
+			PlayerController[] controllers = m_characterSelector.getControllers(fighters);
+			m_battle = new Battle(fighters, controllers, new BattleConfig());
+		}
+
+		// Physics Step
 		float currentTime = System.nanoTime();
         physicsStep(currentTime - m_previousTime);
         m_previousTime = currentTime;
 
-		// Remove Dead Players, or Attacks.
-		Array<Body> bodies = new Array<>();
-		WORLD.getBodies(bodies);
-		for (Body body : bodies) {
-			for (Fixture fixture : body.getFixtureList()) {
-				if (fixture.getUserData() instanceof entityCategory && fixture.getUserData().equals(entityCategory.Destroy)) {
-					WORLD.destroyBody(body);
-				}
-				else if (fixture.getUserData() instanceof Attack.AttackInfo) {
-					Attack.AttackInfo info = (Attack.AttackInfo) fixture.getUserData();
-					if (System.currentTimeMillis() > info.lifeTime) {
-						WORLD.destroyBody(body);
-					}
-				}
-			}
-		}
-
+		// Update Environments
 		CAMERA.update();
-		if (!m_battle.isFinished) m_battle.update();
+		if (m_battle != null && !m_battle.isFinished) m_battle.update();
 
-		m_debugRenderer.render(WORLD, CAMERA.combined); // See Collision Boxes
+		// Draw Environments
+		m_debugRenderer.render(WORLD, CAMERA.combined); // See Collision Boxes, to be removed
 		m_spriteBatch.setProjectionMatrix(CAMERA.combined); // Matrix for Sprites
 		m_shapeRenderer.setProjectionMatrix(CAMERA.combined); // Matrix for GDXShapes
-
-		// Draw Battle
-		if (!m_battle.isFinished) m_battle.draw(m_spriteBatch, m_shapeRenderer);
+		if (m_battle != null && !m_battle.isFinished) m_battle.draw(m_spriteBatch, m_shapeRenderer);
 	}
 
 	
