@@ -373,6 +373,5 @@ public class PlayerController {
         m_stateTime = 0;
         m_currentAnimation = m_animations.get(animation);
         m_currentAnimationEnum = animation;
-        System.out.println(animation);
     }
 }
