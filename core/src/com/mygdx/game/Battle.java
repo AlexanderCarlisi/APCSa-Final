@@ -155,6 +155,7 @@ public class Battle {
     public void draw(SpriteBatch spriteRenderer, ShapeRenderer shapeRenderer) {
 
         spriteRenderer.begin();
+        m_arena.draw(spriteRenderer);
         for (int i = 0; i < m_fighters.length; i++) {
             Animation<TextureRegion> animation = m_controllers[i].getCurrentAnimation();
             if (animation != null) {
@@ -186,7 +187,6 @@ public class Battle {
                 }
             }
         }
-        m_arena.draw(shapeRenderer);
         shapeRenderer.end();
     }
 

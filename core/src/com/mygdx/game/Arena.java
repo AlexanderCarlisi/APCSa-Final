@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -25,11 +27,10 @@ public class Arena {
     public static final Vector2 BOUNDS = new Vector2(GDXHelper.PTM(1500), GDXHelper.PTM(1500));
 
     /** Constant position that every Arena's ground should be at. */
-    private static final Vector2 GROUND_POSITION = new Vector2(GDXHelper.PTM(0), GDXHelper.PTM(-200));
+    private static final Vector2 GROUND_POSITION = new Vector2(GDXHelper.PTM(0), GDXHelper.PTM(-400));
 
     private static final float GROUND_WIDTH = GDXHelper.PTM(500);
-    private static final float GROUND_HEIGHT = GDXHelper.PTM(3);
-
+    private static final float GROUND_HEIGHT = GDXHelper.PTM(200);
     private static final Skin FONT = new Skin(Gdx.files.internal("FontSkins\\default\\skin\\uiskin.json"));
 
     private final Vector2[] m_startingPositions;
@@ -43,6 +44,9 @@ public class Arena {
     private final Fixture m_bedrockFixture = m_bedrockBody.createFixture(
             GDXHelper.generateFixtureDef(1, 10, 0, 10000, 0.01f,
                     MyGdxGame.entityCategory.Ground.getID(), MyGdxGame.entityCategory.Fighter.getID()));
+
+    private final Texture m_background;
+    private final Texture m_ground;
 
     // UI
     private final Stage m_stage = new Stage();
@@ -80,8 +84,8 @@ public class Arena {
         m_stage.addActor(m_timerLabel);
         m_timerLabel.setPosition(1200, 600);
 
-        // m_stage.setDebugAll(true);
-
+        m_background = new Texture(Gdx.files.internal("Arenas/background0.png"));
+        m_ground = new Texture(Gdx.files.internal("Arenas/ground0.png"));
     }
 
     public Body getGroundBody() {
@@ -99,9 +103,11 @@ public class Arena {
     /**
      * Render elements of the Arena. Including UI, Background, and Ground.
      */
-    public void draw(ShapeRenderer shapeRenderer) {
-        m_stage.draw();
-        GDXHelper.drawRect(shapeRenderer, GROUND_POSITION.x, GROUND_POSITION.y, GROUND_WIDTH, GROUND_HEIGHT);
+    public void draw(SpriteBatch spriteRenderer) {
+        spriteRenderer.draw(m_background, -640 / 100f, -360 / 100f, GDXHelper.PTM(1280), GDXHelper.PTM(720));
+        spriteRenderer.draw(m_ground, -500 / 100f, -400 / 100f, GDXHelper.PTM(1000), GDXHelper.PTM(200));
+        //m_stage.draw();
+        // GDXHelper.drawRect(shapeRenderer, GROUND_POSITION.x, GROUND_POSITION.y, GROUND_WIDTH, GROUND_HEIGHT);
     }
 
     public void dispose() {
@@ -123,7 +129,7 @@ public class Arena {
             m_timerLabel.setText(String.format("%.2f", (timeLimit - (System.nanoTime() - m_startTime) / 1000000000.0)));
         }
 
-        m_stage.act();
+        // m_stage.act();
     }
 
 
