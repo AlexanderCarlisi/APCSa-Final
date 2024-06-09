@@ -103,11 +103,15 @@ public class Arena {
     /**
      * Render elements of the Arena. Including UI, Background, and Ground.
      */
-    public void draw(SpriteBatch spriteRenderer) {
+    public void drawWorld(SpriteBatch spriteRenderer) {
         spriteRenderer.draw(m_background, -640 / 100f, -360 / 100f, GDXHelper.PTM(1280), GDXHelper.PTM(720));
         spriteRenderer.draw(m_ground, -500 / 100f, -400 / 100f, GDXHelper.PTM(1000), GDXHelper.PTM(200));
         //m_stage.draw();
         // GDXHelper.drawRect(shapeRenderer, GROUND_POSITION.x, GROUND_POSITION.y, GROUND_WIDTH, GROUND_HEIGHT);
+    }
+
+    public void drawUI() {
+        m_stage.draw();
     }
 
     public void dispose() {
