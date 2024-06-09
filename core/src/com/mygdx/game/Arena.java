@@ -72,7 +72,7 @@ public class Arena {
             m_stockLabels[i] = new Label("0", FONT);
             m_stage.addActor(m_stockLabels[i]);
             m_stockLabels[i].setPosition(labelPosX, labelPosY - 25);
-            labelPosX += 100;
+            labelPosX += 200;
         }
 
         m_startTime = System.currentTimeMillis();

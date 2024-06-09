@@ -1,5 +1,8 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -12,6 +15,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
  * A class for generalized helper methods to cope with the lack of constructors in LibGDX.
  */
 public class GDXHelper {
+
+    public static final int ANI_COL = 6;
+    public static final int ANI_ROW = 5;
 
     /**
      * Pixels to Meters Method.
@@ -82,6 +88,15 @@ public class GDXHelper {
         return box2dPos - dimension;
     }
 
+    /**
+     * Converts a Size in Box2D to its Size in LibGDX, for Drawing objects to the screen.
+     * @param box2dSize width or height
+     * @return size * 2
+     */
+    public static float convertBox2dSize(float box2dSize) {
+        return box2dSize * 2;
+    }
+
 
     /**
      * The Transform between Box2d and LibGDX is weird, this will convert LibGDX drawing
@@ -116,5 +131,37 @@ public class GDXHelper {
      */
     public static void drawCircle(ShapeRenderer shapeRenderer, float posX, float posY, float radius) {
         shapeRenderer.circle(posX - radius, posY - radius, radius * 2, 50);
+    }
+
+
+    /**
+     * Generates an Animation object based of given TileSheet.
+     * <p>
+     * Code Provided by LibGDX Animations Docs :
+     * <a href="https://libgdx.com/wiki/graphics/2d/2d-animation">Docs Link</a>
+     *
+     * @param tileSheet
+     * @return
+     */
+    public static Animation<TextureRegion> generateAnimation(Texture tileSheet) {
+        // Use the split utility method to create a 2D array of TextureRegions. This is
+        // possible because this sprite sheet contains frames of equal size and they are
+        // all aligned.
+        TextureRegion[][] tmp = TextureRegion.split(tileSheet,
+                tileSheet.getWidth() / ANI_COL,
+                tileSheet.getHeight() / ANI_ROW);
+
+        // Place the regions into a 1D array in the correct order, starting from the top
+        // left, going across first. The Animation constructor requires a 1D array.
+        TextureRegion[] frames = new TextureRegion[ANI_COL * ANI_ROW];
+        int index = 0;
+        for (int i = 0; i < ANI_ROW; i++) {
+            for (int j = 0; j < ANI_COL; j++) {
+                frames[index++] = tmp[i][j];
+            }
+        }
+
+        // Initialize the Animation with the frame interval and array of frames
+        return new Animation<TextureRegion>(1/30f, frames);
     }
 }

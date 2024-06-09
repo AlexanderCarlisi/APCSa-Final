@@ -43,7 +43,6 @@ public class MyGdxGame extends ApplicationAdapter {
 
 						// Apply an impulse to the target's body in the calculated direction
 						float impulseMagnitude = attackInfo.attack.m_force + (attackInfo.attack.m_force * (target.getHealth() / 100 / target.getWeight()));
-						System.out.println(impulseMagnitude);
 						Vector2 impulse = new Vector2(impulseMagnitude, impulseMagnitude);
 
 						switch(attackInfo.attack.dir) {

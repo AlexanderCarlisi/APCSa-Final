@@ -1,8 +1,11 @@
 package com.mygdx.game;
 
+import java.util.HashMap;
 import java.util.function.BooleanSupplier;
 
 import com.badlogic.gdx.ai.steer.behaviors.Jump;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import org.libsdl.SDL;
 import org.libsdl.SDL_Error;
@@ -48,6 +51,7 @@ public class PlayerController {
     private static final long GUARD_DEBOUNCE = 1000;
 
     private final Fighter m_fighter;
+    private final HashMap<Fighter.Animations, Animation<TextureRegion>> m_animations;
 
     private final ControlAction[] m_bindings;
     private final ControllerType m_controllerType;
@@ -68,6 +72,10 @@ public class PlayerController {
     private float m_fallSpeed;
     private float m_guardPercent;
     private long m_previousGuardTime;
+    private Animation<TextureRegion> m_currentAnimation;
+    private Fighter.Animations m_currentAnimationEnum;
+    private Fighter.Animations m_newAnimationEnum;
+    private float m_stateTime;
 
     /**
      * Constructor for the Controller Class.
@@ -76,6 +84,7 @@ public class PlayerController {
      */
     public PlayerController(Fighter fighter, ControllerType controllerType) {
         m_fighter = fighter;
+        m_animations = m_fighter.getAnimations();
         m_isGrounded = true;
         m_hasDoubleJump = false;
         m_isFacingRight = false;
@@ -86,6 +95,9 @@ public class PlayerController {
         m_fallSpeed = 0;
         m_guardPercent = 100;
         m_controllerType = controllerType;
+        m_stateTime = 0;
+        m_currentAnimationEnum = Fighter.Animations.Idle;
+        m_currentAnimation = m_animations.get(Fighter.Animations.Idle);
 
         // init bindings
         switch(m_controllerType) {
@@ -156,6 +168,7 @@ public class PlayerController {
         }
 
         m_isFacingRight = Math.signum(modifier) >= 0;
+        m_newAnimationEnum = Fighter.Animations.Run;
     }
 
 
@@ -175,6 +188,7 @@ public class PlayerController {
             m_lastJump = System.currentTimeMillis();
             m_hasDoubleJump = false;
         }
+        m_newAnimationEnum = Fighter.Animations.Jump;
     }
 
 
@@ -238,21 +252,70 @@ public class PlayerController {
 
         m_endLag = m_fighter.attack(attackType, direction, m_isGrounded, m_isFacingRight);
         m_previousAttackTime = System.currentTimeMillis();
+
+        String attack = "";
+        if (attackType == Attack.attackType.Basic)
+            attack += (m_isGrounded) ? "ground" : "air";
+
+        else if (attackType == Attack.attackType.Special)
+            attack += "special";
+
+        else if (attackType == Attack.attackType.Smash)
+            attack += "smash";
+
+        else if (attackType == Attack.attackType.Ultimate)
+            attack += "ultimate";
+
+        if (attackType != Attack.attackType.Ultimate)
+            switch(direction) {
+                case Neutral: {
+                    attack += "Neutral";
+                    break;
+                }
+                case Side: {
+                    attack += "Side";
+                    break;
+                }
+                case Up: {
+                    attack += "Up";
+                    break;
+                }
+                case Down: {
+                    attack += "Down";
+                    break;
+                }
+            }
+
+        for (Fighter.Animations num : Fighter.Animations.values()) {
+            if (num.path.equals(attack)) {
+                m_newAnimationEnum = num;
+                break;
+            }
+        }
     }
 
 
     public void update() {
+        m_newAnimationEnum = Fighter.Animations.Idle; // Default Animation, to be overridden by others
+
         // Guarding Check
         if (m_isGuarding) {
             m_guardPercent -= GUARD_DEGRADE; // Degrade Shield
+            m_newAnimationEnum = Fighter.Animations.Shield;
             // Shield Break
             if (m_guardPercent <= 0) {
                 m_guardPercent = -GUARDBREAK_STUNTIME;
                 m_isGuarding = false;
             }
         }
-        if (!m_isGuarding && m_guardPercent < 100 - GUARD_GENERATE) m_guardPercent += GUARD_GENERATE; // Regen Shield
-        if (m_guardPercent <= 0) return; // in Guard Break
+        // Regen Shield
+        if (!m_isGuarding && m_guardPercent < 100 - GUARD_GENERATE) m_guardPercent += GUARD_GENERATE;
+
+        // in Shield Break
+        if (m_guardPercent <= 0) {
+            m_newAnimationEnum = Fighter.Animations.ShieldBreak;
+            return;
+        }
 
         Body body = m_fighter.getBody();
         Vector2 pos = body.getPosition();
@@ -260,18 +323,15 @@ public class PlayerController {
         m_deltaTime = System.currentTimeMillis() - m_previousTime;
         m_fallSpeed = (pos.y - m_previousY) * m_deltaTime;
         if (System.currentTimeMillis() - m_previousAttackTime <= m_endLag) return;
+        m_stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
         // Bindings
-        for (ControlAction action : m_bindings) {
-            action.checkAndPerform();
-        }
-
-        if (m_isGrounded) {
-            m_hasDoubleJump = true;
-        }
+        for (ControlAction action : m_bindings) action.checkAndPerform();
+        if (m_isGrounded) m_hasDoubleJump = true;
 
         m_previousY = pos.y;
         m_previousTime = System.currentTimeMillis();
+        setAnimation(m_newAnimationEnum);
     }
 
 
@@ -289,5 +349,30 @@ public class PlayerController {
 
     public float getGuardPercent() {
         return m_guardPercent;
+    }
+
+    public boolean isFacingRight() {
+        return m_isFacingRight;
+    }
+
+    public Animation<TextureRegion> getCurrentAnimation() {
+        return m_currentAnimation;
+    }
+
+    public float getStateTime() {
+        return m_stateTime;
+    }
+
+    private void setAnimation(Fighter.Animations animation) {
+        // Don't change anything if it's already that animation
+        if (m_currentAnimationEnum == animation) return;
+
+        // Higher Priority animations will continue until they finish.
+        if (m_currentAnimationEnum.priority >= animation.priority && !m_currentAnimation.isAnimationFinished(m_stateTime)) return;
+
+        m_stateTime = 0;
+        m_currentAnimation = m_animations.get(animation);
+        m_currentAnimationEnum = animation;
+        System.out.println(animation);
     }
 }

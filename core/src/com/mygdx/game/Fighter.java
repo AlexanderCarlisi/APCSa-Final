@@ -1,6 +1,9 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -8,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -117,6 +121,38 @@ public class Fighter {
         }
     }
 
+    public enum Animations {
+        Idle("idle", 0),
+        Run("run", -1),
+        Jump("jump", 1),
+        GroundNeutral("groundNeutral", 2),
+        GroundSide("groundSide", 2),
+        GroundUp("groundUp", 2),
+        GroundDown("groundDown", 2),
+        AirNeutral("airNeutral", 2),
+        AirSide("airSide", 2),
+        AirUp("airUp", 2),
+        AirDown("airDown", 2),
+        SpecialNeutral("specialNeutral", 2),
+        SpecialSide("specialSide", 2),
+        SpecialUp("specialUp", 2),
+        SpecialDown("specialDown", 2),
+        SmashSide("smashSide", 2),
+        SmashUp("smashUp", 2),
+        SmashDown("smashDown", 2),
+        Ultimate("ultimate", 3),
+        Shield("shield", 4),
+        ShieldBreak("shieldBreak", 5);
+
+        public String path;
+        public int priority;
+
+        Animations(String path, int priority) {
+            this.path = path;
+            this.priority = priority;
+        }
+    }
+
     /** Body Definition used for each Fighter. */
     private final BodyDef BODY_DEF = GDXHelper.generateBodyDef(BodyType.DynamicBody, new Vector2(0, 0));
 
@@ -146,6 +182,8 @@ public class Fighter {
 
     /** Final Array of all Attacks/Specials of the Fighter. */
     private final AttackConfig[] m_attackConfigs;
+
+    private final HashMap<Animations, Animation<TextureRegion>> m_animations;
 
     private PlayerController m_controller;
 
@@ -180,6 +218,7 @@ public class Fighter {
         m_fixture.setUserData(this); // Collider identifier
         m_attackConfigs = attackConfigs;
 
+        m_animations = null;
         m_body.setGravityScale(0.1f);
     }
 
@@ -196,6 +235,14 @@ public class Fighter {
                 MyGdxGame.entityCategory.Fighter.getID(), MyGdxGame.entityCategory.Ground.getID()));
         m_fixture.setUserData(this); // Collider identifier
         m_attackConfigs = config.attackConfigs;
+
+        m_animations = new HashMap<>();
+        String path = "Animations/"+m_name+"/";
+        for (Animations num : Animations.values()) {
+            try {
+                m_animations.put(num, GDXHelper.generateAnimation(new Texture(Gdx.files.internal(path+num.path+".png"))));
+            } catch (Exception e) {}
+        }
 
         m_body.setGravityScale(0.1f);
     }
@@ -250,6 +297,10 @@ public class Fighter {
 
     public PlayerController getController() {
         return m_controller;
+    }
+
+    public HashMap<Animations, Animation<TextureRegion>> getAnimations() {
+        return m_animations;
     }
 
     /**

@@ -1,6 +1,9 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -33,6 +36,7 @@ public class Battle {
 
     /** If the startTime in Arena has been set. */
     private boolean m_setStartTime;
+    private float m_stateTime;
 
     /** If the Battle has Concluded */
     public boolean isFinished;
@@ -60,6 +64,7 @@ public class Battle {
 
         m_startTime = (m_config.timeLimit == -1) ? 0 : System.nanoTime();
         m_setStartTime = false;
+        m_stateTime = 0;
     }
 
 
@@ -145,11 +150,30 @@ public class Battle {
     /**
      * Objects to update in Render Loop.
      * For Graphics, not Logic
-     * @param spriteBatch
+     * @param spriteRenderer
      */
-    public void draw(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
-        // spriteBatch.begin();
-        // spriteBatch.end();
+    public void draw(SpriteBatch spriteRenderer, ShapeRenderer shapeRenderer) {
+
+        spriteRenderer.begin();
+        for (int i = 0; i < m_fighters.length; i++) {
+            Animation<TextureRegion> animation = m_controllers[i].getCurrentAnimation();
+            if (animation != null) {
+                TextureRegion currentFrame = animation.getKeyFrame(m_controllers[i].getStateTime(), true);
+                Vector2 pos = m_fighters[i].getBody().getPosition();
+                Vector2 size = m_fighters[i].getDimensions();
+
+                if (!m_controllers[i].isFacingRight()) // Flip Orientation
+                    size.x = -size.x;
+                spriteRenderer.draw(
+                        currentFrame,
+                        GDXHelper.convertBox2dPos(pos.x, size.x),
+                        GDXHelper.convertBox2dPos(pos.y, size.y),
+                        GDXHelper.convertBox2dSize(size.x),
+                        GDXHelper.convertBox2dSize(size.y));
+            }
+        }
+        spriteRenderer.end();
+
         shapeRenderer.begin();
         for (int i = 0; i < m_fighters.length; i++) {
             if (m_stocks[i] > 0 || m_stocks[i] == -1) {
