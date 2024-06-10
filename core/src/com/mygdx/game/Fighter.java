@@ -240,7 +240,7 @@ public class Fighter {
         String path = "Animations/"+m_name+"/";
         for (Animations num : Animations.values()) {
             try {
-                m_animations.put(num, GDXHelper.generateAnimation(new Texture(Gdx.files.internal(path+num.path+".png"))));
+                m_animations.put(num, GDXHelper.generateAnimation(new Texture(Gdx.files.internal(path+num.path+".png")), 1/4f));
             } catch (Exception e) {}
         }
 

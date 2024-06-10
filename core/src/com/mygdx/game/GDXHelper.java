@@ -144,7 +144,7 @@ public class GDXHelper {
      * @param tileSheet
      * @return
      */
-    public static Animation<TextureRegion> generateAnimation(Texture tileSheet) {
+    public static Animation<TextureRegion> generateAnimation(Texture tileSheet, float frameTime) {
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
         // all aligned.
@@ -163,6 +163,6 @@ public class GDXHelper {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        return new Animation<TextureRegion>(1/30f, frames);
+        return new Animation<TextureRegion>(frameTime, frames);
     }
 }
