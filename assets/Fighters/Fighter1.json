@@ -1,7 +1,7 @@
 {
   "name": "Fighter1",
-  "jumpForce": 0.5,
-  "runSpeed": 0.075,
+  "jumpForce": 0.115,
+  "runSpeed": 0.02,
   "weight": 5,
   "width": 0.2,
   "height": 0.35,
@@ -14,10 +14,10 @@
       "isSideDependent": true,
       "damage": 1.5,
       "ultPercent": 1,
-      "force": 0.3,
+      "force": 0.03,
       "size": {
-        "x": 0.2,
-        "y": 0.15
+        "x": 0.3,
+        "y": 0.2
       },
       "impulse": null,
       "isProjectile": false,
@@ -36,10 +36,10 @@
       "isSideDependent": true,
       "damage": 3,
       "ultPercent": 1,
-      "force": 0.4,
+      "force": 0.03,
       "size": {
-        "x": 0.25,
-        "y": 0.1
+        "x": 0.3,
+        "y": 0.2
       },
       "impulse": null,
       "isProjectile": false,
@@ -58,10 +58,10 @@
       "isSideDependent": false,
       "damage": 3,
       "ultPercent": 1,
-      "force": 0.4,
+      "force": 0.03,
       "size": {
         "x": 0.3,
-        "y": 0.1
+        "y": 0.5
       },
       "impulse": null,
       "isProjectile": false,
@@ -80,10 +80,10 @@
       "isSideDependent": true,
       "damage": 3,
       "ultPercent": 1,
-      "force": 0.4,
+      "force": 0.03,
       "size": {
-        "x": 0.2,
-        "y": 0.15
+        "x": 0.3,
+        "y": 0.4
       },
       "impulse": null,
       "isProjectile": false,
@@ -102,7 +102,7 @@
       "isSideDependent": true,
       "damage": 1.5,
       "ultPercent": 1,
-      "force": 0.5,
+      "force": 0.04,
       "size": {
         "x": 0.2,
         "y": 0.15
@@ -124,10 +124,10 @@
       "isSideDependent": true,
       "damage": 3,
       "ultPercent": 1,
-      "force": 0.6,
+      "force": 0.05,
       "size": {
-        "x": 0.25,
-        "y": 0.1
+        "x": 0.3,
+        "y": 0.2
       },
       "impulse": null,
       "isProjectile": false,
@@ -146,10 +146,10 @@
       "isSideDependent": false,
       "damage": 3,
       "ultPercent": 1,
-      "force": 0.5,
+      "force": 0.05,
       "size": {
-        "x": 0.3,
-        "y": 0.1
+        "x": 0.4,
+        "y": 0.3
       },
       "impulse": null,
       "isProjectile": false,
@@ -168,10 +168,10 @@
       "isSideDependent": false,
       "damage": 3,
       "ultPercent": 1,
-      "force": 0.6,
+      "force": 0.05,
       "size": {
         "x": 0.2,
-        "y": 0.15
+        "y": 0.5
       },
       "impulse": null,
       "isProjectile": false,
@@ -190,10 +190,10 @@
       "isSideDependent": false,
       "damage": 1.5,
       "ultPercent": 2,
-      "force": 0.3,
+      "force": 0.06,
       "size": {
-        "x": 0.2,
-        "y": 0.15
+        "x": 0.4,
+        "y": 0.5
       },
       "impulse": {
         "x": 0.5,
@@ -215,10 +215,10 @@
       "isSideDependent": true,
       "damage": 3,
       "ultPercent": 2,
-      "force": 0.4,
+      "force": 0.04,
       "size": {
-        "x": 0.25,
-        "y": 0.1
+        "x": 0.4,
+        "y": 0.5
       },
       "impulse": null,
       "isProjectile": false,
@@ -237,10 +237,10 @@
       "isSideDependent": false,
       "damage": 3,
       "ultPercent": 2,
-      "force": 0.6,
+      "force": 0.05,
       "size": {
-        "x": 0.3,
-        "y": 0.1
+        "x": 0.4,
+        "y": 0.4
       },
       "impulse": {
         "x": 0,
@@ -262,10 +262,10 @@
       "isSideDependent": false,
       "damage": 3,
       "ultPercent": 2,
-      "force": 0.6,
+      "force": 0.04,
       "size": {
-        "x": 0.2,
-        "y": 0.15
+        "x": 0.3,
+        "y": 0.3
       },
       "impulse": null,
       "isProjectile": false,
@@ -284,10 +284,10 @@
       "isSideDependent": true,
       "damage": 10,
       "ultPercent": 2,
-      "force": 0.5,
+      "force": 0.07,
       "size": {
-        "x": 0.3,
-        "y": 0.3
+        "x": 0.4,
+        "y": 0.4
       },
       "impulse": null,
       "isProjectile": false,
@@ -306,10 +306,10 @@
       "isSideDependent": false,
       "damage": 10,
       "ultPercent": 2,
-      "force": 0.8,
+      "force": 0.07,
       "size": {
-        "x": 0.35,
-        "y": 0.3
+        "x": 0.4,
+        "y": 0.4
       },
       "impulse": null,
       "isProjectile": false,
@@ -328,10 +328,10 @@
       "isSideDependent": false,
       "damage": 10,
       "ultPercent": 2,
-      "force": 0.8,
+      "force": 0.07,
       "size": {
-        "x": 0.35,
-        "y": 0.3
+        "x": 0.6,
+        "y": 0.5
       },
       "impulse": null,
       "isProjectile": false,
@@ -350,7 +350,7 @@
       "isSideDependent": false,
       "damage": 50,
       "ultPercent": 2,
-      "force": 1,
+      "force": 0.3,
       "size": {
         "x": 30,
         "y": 30

@@ -38,9 +38,9 @@ public class CharacterSelect {
         m_selectionIndexs = new ArrayList<>();
         m_controllerTypes = new ArrayList<>();
 
-        m_selectionIndexs.add(0, 0);
+        m_selectionIndexs.add(0, 1);
         m_controllerTypes.add(0, PlayerController.ControllerType.Keyboard);
-        m_selectionIndexs.add(1, 1);
+        m_selectionIndexs.add(1, 0);
         m_controllerTypes.add(1, PlayerController.ControllerType.Controller);
         m_ready = true;
 
