@@ -20,6 +20,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	public static class WorldContactListener implements ContactListener {
 		@Override
 		public void beginContact(Contact contact) {
+			// Grounding Fighters
 			// Fixture A is the Fighter
 			// Fixture B is the Ground
 			if (contact.getFixtureB().getUserData() instanceof MyGdxGame.entityCategory && contact.getFixtureA().getUserData() instanceof Fighter) {
@@ -30,6 +31,7 @@ public class MyGdxGame extends ApplicationAdapter {
 				}
 			}
 
+			// Attacking Fighters
 			// Fixture A is Fighter contacted with
 			// Fixture B is AttackInfo
 			if (contact.getFixtureA().getUserData() instanceof Fighter && contact.getFixtureB().getUserData() instanceof Attack.AttackInfo) {
@@ -85,6 +87,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		@Override
 		public void endContact(Contact contact) {
+			// Grounding Fighters
 			// Fixture A is the Fighter
 			// Fixture B is the Ground
 			if (contact.getFixtureB().getUserData() instanceof MyGdxGame.entityCategory && contact.getFixtureA().getUserData() instanceof Fighter) {
@@ -98,6 +101,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		@Override
 		public void preSolve(Contact contact, Manifold oldManifold) {
+			// Could potentially be removed, but if it ain't broke don't fix it.
 			// Have Collision Detection, but no Physical Collisions for Attacks
 			if (contact.getFixtureB().getUserData() instanceof Attack.AttackInfo) {
 				contact.setEnabled(false);
