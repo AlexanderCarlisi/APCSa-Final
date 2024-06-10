@@ -1,5 +1,5 @@
 {
-  "name": "Fighter1",
+  "name": "SwordFighter",
   "jumpForce": 0.115,
   "runSpeed": 0.02,
   "weight": 5,
@@ -199,12 +199,12 @@
         "x": 0.5,
         "y": 0
       },
-      "isProjectile": true,
+      "isProjectile": false,
       "direction": "Neutral",
       "isGroundAttack": false,
       "attackType": "Special",
       "bringFighter": false,
-      "lifeTime": 5000,
+      "lifeTime": 0,
       "endLag": 350
     },
     {
@@ -220,13 +220,16 @@
         "x": 0.4,
         "y": 0.5
       },
-      "impulse": null,
-      "isProjectile": false,
+      "impulse": {
+        "x": 0.1,
+        "y": 0
+      },
+      "isProjectile": true,
       "direction": "Side",
       "isGroundAttack": false,
       "attackType": "Special",
-      "bringFighter": false,
-      "lifeTime": 0,
+      "bringFighter": true,
+      "lifeTime": 1000,
       "endLag": 400
     },
     {

@@ -17,8 +17,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
  */
 public class GDXHelper {
 
-    public static final int ANI_COL = 6;
-    public static final int ANI_ROW = 5;
+    public static final int ANI_COL = 4;
+    public static final int ANI_ROW = 1;
 
     /**
      * Pixels to Meters Method.
