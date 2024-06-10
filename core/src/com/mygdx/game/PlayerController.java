@@ -138,7 +138,10 @@ public class PlayerController {
                         new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_A), this::jump),
                         new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_X), () -> attack(Attack.attackType.Basic)),
                         new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_Y), () -> attack(Attack.attackType.Special)),
-                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_B), () -> attack(Attack.attackType.Smash))
+                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_B), () -> attack(Attack.attackType.Smash)),
+                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_B) && m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_Y), () -> attack(Attack.attackType.Ultimate)),
+                        new ControlAction(() -> m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER), this::guard),
+                        new ControlAction(() -> !m_controller.getButton(SDL.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER), this::stopGuard),
                 };
                 break;
 
