@@ -143,7 +143,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	public static Camera CAMERA;
 
 	/** Render vars */
-    private Box2DDebugRenderer m_debugRenderer;
+    // private Box2DDebugRenderer m_debugRenderer;
 	private float m_accumulator = 0;
 	private float m_previousTime = 0;
 
@@ -158,7 +158,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void create () { // Start of the Program
 		WORLD = new World(new Vector2(0f, -1f), true);
 		CAMERA = new OrthographicCamera(GDXHelper.PTM(1280), GDXHelper.PTM(720));
-		m_debugRenderer = new Box2DDebugRenderer();
+		// m_debugRenderer = new Box2DDebugRenderer();
 
 		m_spriteBatch = new SpriteBatch();
 		m_shapeRenderer = new ShapeRenderer();
@@ -191,7 +191,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (m_battle != null && !m_battle.isFinished) m_battle.update();
 
 		// Draw Environments
-		m_debugRenderer.render(WORLD, CAMERA.combined); // See Collision Boxes, to be removed
+		// m_debugRenderer.render(WORLD, CAMERA.combined); // See Collision Boxes, to be removed
 		m_spriteBatch.setProjectionMatrix(CAMERA.combined); // Matrix for Sprites
 		m_shapeRenderer.setProjectionMatrix(CAMERA.combined); // Matrix for GDXShapes
 		if (m_battle != null && !m_battle.isFinished) m_battle.draw(m_spriteBatch, m_shapeRenderer);
@@ -201,7 +201,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void dispose () { // End of the Program
 		m_spriteBatch.dispose();
-		m_debugRenderer.dispose();
+		// m_debugRenderer.dispose();
 		m_battle.dispose();
 	}
 
