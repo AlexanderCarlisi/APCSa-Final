@@ -256,6 +256,9 @@ public class PlayerController {
         m_endLag = m_fighter.attack(attackType, direction, m_isGrounded, m_isFacingRight);
         m_previousAttackTime = System.currentTimeMillis();
 
+        // If no Attack was done then don't play an Animation.
+        if (m_endLag == 0) return;
+
         String attack = "";
         if (attackType == Attack.attackType.Basic)
             attack += (m_isGrounded) ? "ground" : "air";
