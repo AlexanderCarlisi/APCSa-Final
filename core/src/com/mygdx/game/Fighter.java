@@ -144,8 +144,8 @@ public class Fighter {
         Shield("shield", 4),
         ShieldBreak("shieldBreak", 5);
 
-        public String path;
-        public int priority;
+        public final String path;
+        public final int priority;
 
         Animations(String path, int priority) {
             this.path = path;
@@ -214,7 +214,7 @@ public class Fighter {
         isDead = false;
         m_body = MyGdxGame.WORLD.createBody(BODY_DEF);
         m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(1f, 4f, 0f, width, height,
-                MyGdxGame.entityCategory.Fighter.getID(), MyGdxGame.entityCategory.Ground.getID()));
+                MyGdxGame.entityCategory.Fighter.id, MyGdxGame.entityCategory.Ground.id));
         m_fixture.setUserData(this); // Collider identifier
         m_attackConfigs = attackConfigs;
 
@@ -232,7 +232,7 @@ public class Fighter {
         isDead = false;
         m_body = MyGdxGame.WORLD.createBody(BODY_DEF);
         m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(1f, 4f, 0f, m_width, m_height,
-                MyGdxGame.entityCategory.Fighter.getID(), MyGdxGame.entityCategory.Ground.getID()));
+                MyGdxGame.entityCategory.Fighter.id, MyGdxGame.entityCategory.Ground.id));
         m_fixture.setUserData(this); // Collider identifier
         m_attackConfigs = config.attackConfigs;
 

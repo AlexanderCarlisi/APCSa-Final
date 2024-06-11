@@ -36,7 +36,6 @@ public class Battle {
 
     /** If the startTime in Arena has been set. */
     private boolean m_setStartTime;
-    private float m_stateTime;
 
     /** If the Battle has Concluded */
     public boolean isFinished;
@@ -64,7 +63,6 @@ public class Battle {
 
         m_startTime = (m_config.timeLimit == -1) ? 0 : System.nanoTime();
         m_setStartTime = false;
-        m_stateTime = 0;
     }
 
 
@@ -190,6 +188,32 @@ public class Battle {
         shapeRenderer.end();
 
         m_arena.drawUI();
+    }
+
+
+    /**
+     * PRECONDITION: Battle has ended
+     * Works only for FREE FOR ALL modes
+     *
+     * @return Name/Text who won / victory status
+     */
+    public String getWinner() {
+        if (!isFinished) return null;
+
+        Fighter winner = null;
+        for (int i = 0; i < m_fighters.length; i++) {
+            if (m_stocks[i] > 0 && winner == null) {
+                winner = m_fighters[i];
+            } else if (winner != null && m_stocks[i] > 0) {
+                return "Game ended from Timer!";
+            }
+        }
+
+        if (winner != null) {
+            return winner.getName() + " Won the Battle!";
+        }
+
+        return "No Winner";
     }
 
 

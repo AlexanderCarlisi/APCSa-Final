@@ -13,7 +13,7 @@ public class BattleConfig {
     }
 
     public int stocks = 3; // -1 means infinite stocks
-    public float timeLimit = -1f; // -1 means no Time Limit. Seconds
+    public float timeLimit = 300f; // -1 means no Time Limit. Seconds
     public GameMode gamemode = GameMode.FreeForAll;
 
     /**

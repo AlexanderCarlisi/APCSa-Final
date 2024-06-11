@@ -45,7 +45,7 @@ public class Attack {
         m_damage = damage;
         m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyDef.BodyType.DynamicBody, pos));
         m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(0, 0, 0, size.x, size.y,
-                MyGdxGame.entityCategory.Attack.getID(), MyGdxGame.entityCategory.Fighter.getID()));
+                MyGdxGame.entityCategory.Attack.id, MyGdxGame.entityCategory.Fighter.id));
         m_fixture.setSensor(true);
         m_fixture.setUserData(new AttackInfo(user, this, 50));
         m_force = force;
@@ -60,7 +60,7 @@ public class Attack {
         m_damage = damage;
         m_body = MyGdxGame.WORLD.createBody(GDXHelper.generateBodyDef(BodyDef.BodyType.DynamicBody, startingPos));
         m_fixture = m_body.createFixture(GDXHelper.generateFixtureDef(0, 0, 0, size.x, size.y,
-            MyGdxGame.entityCategory.Attack.getID(), MyGdxGame.entityCategory.Fighter.getID()));
+            MyGdxGame.entityCategory.Attack.id, MyGdxGame.entityCategory.Fighter.id));
         m_fixture.setSensor(true);
         m_fixture.setUserData(new AttackInfo(user, this, lifeTime));
         m_force = force;

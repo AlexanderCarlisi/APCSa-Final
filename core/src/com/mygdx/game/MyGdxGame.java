@@ -1,12 +1,16 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.PlayerController.ControllerType;
@@ -117,19 +121,14 @@ public class MyGdxGame extends ApplicationAdapter {
 	 * Entity Categories, for MaskBits and Identification of Fixtures.
 	 */
 	public enum entityCategory {
-		Default((short) 0),
 		Ground((short) 1),
 		Fighter((short) 2),
 		Attack((short) 3),
 		Destroy((short) 4);
 
-		private final short id;
-		private entityCategory(short id) {
+		public final short id;
+		entityCategory(short id) {
 			this.id = id;
-		}
-
-		public short getID() {
-			return this.id;
 		}
 	}
 
@@ -152,7 +151,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	private CharacterSelect m_characterSelector;
 	private Battle m_battle;
-	
+	private Stage m_battleEndStage;
 
 	@Override
 	public void create () { // Start of the Program
@@ -195,6 +194,18 @@ public class MyGdxGame extends ApplicationAdapter {
 		m_spriteBatch.setProjectionMatrix(CAMERA.combined); // Matrix for Sprites
 		m_shapeRenderer.setProjectionMatrix(CAMERA.combined); // Matrix for GDXShapes
 		if (m_battle != null && !m_battle.isFinished) m_battle.draw(m_spriteBatch, m_shapeRenderer);
+
+		if (m_battle != null && m_battle.isFinished && m_battleEndStage == null) {
+			m_battleEndStage = new Stage();
+			Label label = new Label("Battle Ended!\n", new Skin(Gdx.files.internal("FontSkins\\default\\skin\\uiskin.json")));
+			label.setText(label.getText() + m_battle.getWinner());
+			label.setPosition(CAMERA.viewportWidth * 100 / 2 - label.getWidth(), CAMERA.viewportHeight * 100 / 2 - label.getHeight());
+			m_battleEndStage.addActor(label);
+		}
+
+		if (m_battleEndStage != null) {
+			m_battleEndStage.draw();
+		}
 	}
 
 	
