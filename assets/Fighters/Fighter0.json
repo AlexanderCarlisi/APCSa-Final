@@ -1,10 +1,10 @@
 {
-  "name":"Fighter0",
-  "jumpForce":0.05,
-  "runSpeed":0.01,
+  "name":"FistFighter",
+  "jumpForce":0.118,
+  "runSpeed":0.02,
   "weight":3,
-  "width":0.15,
-  "height":0.25,
+  "width":0.25,
+  "height":0.35,
   "attackConfigs":[
     {
       "offset":{
