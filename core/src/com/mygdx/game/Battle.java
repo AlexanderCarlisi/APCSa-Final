@@ -175,19 +175,19 @@ public class Battle {
         }
         spriteRenderer.end();
 
-//        shapeRenderer.begin();
-//        for (int i = 0; i < m_fighters.length; i++) {
-//            if (m_stocks[i] > 0 || m_stocks[i] == -1) {
-//                Fighter fighter = m_fighters[i];
-//                Vector2 pos = fighter.getBody().getPosition();
-//                Vector2 size = fighter.getDimensions();
-//                GDXHelper.drawRect(shapeRenderer, pos.x, pos.y, size.x, size.y);
-//                if (fighter.getController().isGuarding()) {
-//                    GDXHelper.drawCircle(shapeRenderer, pos.x, pos.y, size.y * (fighter.getController().getGuardPercent() / 100));
-//                }
-//            }
-//        }
-//        shapeRenderer.end();
+        shapeRenderer.begin();
+        for (int i = 0; i < m_fighters.length; i++) {
+            if (m_stocks[i] > 0 || m_stocks[i] == -1) {
+                Fighter fighter = m_fighters[i];
+                Vector2 pos = fighter.getBody().getPosition();
+                Vector2 size = fighter.getDimensions();
+                // GDXHelper.drawRect(shapeRenderer, pos.x, pos.y, size.x, size.y);
+                if (fighter.getController().isGuarding()) {
+                    GDXHelper.drawCircle(shapeRenderer, pos.x + size.x / 2, pos.y + size.y / 2, size.y * (fighter.getController().getGuardPercent() / 100));
+                }
+            }
+        }
+        shapeRenderer.end();
 
         m_arena.drawUI();
     }
